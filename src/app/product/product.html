@@ -1,0 +1,58 @@
+<div class="container">
+  <h4 class="mb-4">Informasi Produk</h4>
+
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'info'" (click)="activeTab = 'info'">Informasi Umum</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'harga'" (click)="activeTab = 'harga'">Harga</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'demand'" (click)="activeTab = 'demand'">History Permintaan</a>
+    </li>
+  </ul>
+
+  <div class="tab-content p-3 border border-top-0">
+    <!-- Tab 1: Informasi Umum -->
+    <div *ngIf="activeTab === 'info'">
+      <p><strong>Kode Produk:</strong> PRD-001</p>
+      <p><strong>Nama Produk:</strong> Minyak Goreng ABC 1L</p>
+      <p><strong>Stok:</strong></p>
+      <ul>
+        <li>On Hand: 120</li>
+        <li>On Allocation: 15</li>
+        <li>Back Order: 10</li>
+        <li>On Packing: 5</li>
+        <li>On Purchase: 50</li>
+      </ul>
+    </div>
+
+    <!-- Tab 2: Harga -->
+    <div *ngIf="activeTab === 'harga'">
+      <p><strong>Harga Eceran:</strong> Rp15.000</p>  
+      <p><strong>Harga Beli Terakhir:</strong> Rp12.000</p>
+      <p><strong>Rata-rata Harga (Average Cost):</strong> Rp11.500</p>
+    </div>
+
+    <!-- Tab 3: History Permintaan -->
+    <div *ngIf="activeTab === 'demand'">
+      <p><strong>Permintaan Bulan Ini (N):</strong> 80 unit</p>
+      <p><strong>Permintaan 12 Bulan Sebelumnya:</strong></p>
+      <table class="table table-bordered table-sm">
+        <thead class="table-light">
+          <tr>
+            <th>Bulan</th>
+            <th>Jumlah Permintaan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let month of ['N-1','N-2','N-3','N-4','N-5','N-6','N-7','N-8','N-9','N-10','N-11','N-12']; let i = index">
+            <td>{{ month }}</td>
+            <td>{{ 100 - i * 5 }} unit</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
