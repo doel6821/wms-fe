@@ -1,0 +1,29 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Daftar Customer</h4>
+    <button class="btn btn-primary" (click)="goToAdd()">+ Tambah Customer</button>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>No. HP</th>
+        <th>Diskon (%)</th>
+        <th>Term</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of customers">
+        <td><a href="#" (click)="goToDetail(c.id); $event.preventDefault()">{{ c.name }}</a></td>
+        <td>{{ c.phone }}</td>
+        <td>{{ c.discount }}</td>
+        <td>{{ c.term }}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-2" (click)="goToEdit(c.id)">Edit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

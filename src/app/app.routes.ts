@@ -11,6 +11,9 @@ import { SalesDetailComponent } from './sales/sales-detail.component';
 import { PurchaseListComponent } from './purchases/purchase-list.component';
 import { PurchaseFormComponent } from './purchases/purchase-form.component';
 import { PurchaseDetailComponent } from './purchases/purchase-detail.component';
+import { CustomerListComponent } from './customer/customer-list.component';
+import { CustomerFormComponent } from './customer/customer-form.component';
+import { CustomerDetailComponent } from './customer/customer-detail.component';
 
 
 
@@ -33,6 +36,10 @@ export const routes: Routes = [
         { path: 'purchases', component: PurchaseListComponent },
         { path: 'purchases/add', component: PurchaseFormComponent },
         { path: 'purchases/detail/:id', component: PurchaseDetailComponent },
+        { path: 'customers', component: CustomerListComponent },
+        { path: 'customers/add', component: CustomerFormComponent },
+        { path: 'customers/edit/:id', component: CustomerFormComponent },
+        { path: 'customers/detail/:id', component: CustomerDetailComponent }
     ]
   },
   //{ path: '**', redirectTo: 'login' }

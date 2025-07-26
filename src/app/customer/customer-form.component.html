@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <h4>Form Tambah/Edit Customer</h4>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label>Nama Customer</label>
+      <input class="form-control" [(ngModel)]="customer.name" name="name" required />
+    </div>
+
+    <div class="mb-3">
+      <label>No. HP</label>
+      <input class="form-control" [(ngModel)]="customer.phone" name="phone" required />
+    </div>
+
+    <div class="mb-3">
+      <label>Diskon (%)</label>
+      <input type="number" class="form-control" [(ngModel)]="customer.discount" name="discount" />
+    </div>
+
+    <div class="mb-3">
+      <label>Term of Payment</label>
+      <input class="form-control" [(ngModel)]="customer.term" name="term" />
+    </div>
+
+    <button type="submit" class="btn btn-primary me-2">Simpan</button>
+    <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+  </form>
+</div>
