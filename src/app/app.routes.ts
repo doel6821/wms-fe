@@ -14,6 +14,9 @@ import { PurchaseDetailComponent } from './purchases/purchase-detail.component';
 import { CustomerListComponent } from './customer/customer-list.component';
 import { CustomerFormComponent } from './customer/customer-form.component';
 import { CustomerDetailComponent } from './customer/customer-detail.component';
+import { SupplierListComponent } from './supplier/supplier-list.component';
+import { SupplierFormComponent } from './supplier/supplier-form.component';
+import { SupplierDetailComponent } from './supplier/supplier-detail.component';
 
 
 
@@ -39,7 +42,11 @@ export const routes: Routes = [
         { path: 'customers', component: CustomerListComponent },
         { path: 'customers/add', component: CustomerFormComponent },
         { path: 'customers/edit/:id', component: CustomerFormComponent },
-        { path: 'customers/detail/:id', component: CustomerDetailComponent }
+        { path: 'customers/detail/:id', component: CustomerDetailComponent },
+        { path: 'suppliers', component: SupplierListComponent },
+        { path: 'suppliers/add', component: SupplierFormComponent },
+        { path: 'suppliers/edit/:id', component: SupplierFormComponent },
+        { path: 'suppliers/detail/:id', component: SupplierDetailComponent }
     ]
   },
   //{ path: '**', redirectTo: 'login' }

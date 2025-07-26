@@ -1,0 +1,23 @@
+<div class="container mt-4">
+  <h4>Form Tambah/Edit Supplier</h4>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label>Nama Supplier</label>
+      <input class="form-control" [(ngModel)]="supplier.name" name="name" required />
+    </div>
+
+    <div class="mb-3">
+      <label>Telepon</label>
+      <input class="form-control" [(ngModel)]="supplier.phone" name="phone" />
+    </div>
+
+    <div class="mb-3">
+      <label>Alamat</label>
+      <textarea class="form-control" [(ngModel)]="supplier.address" name="address"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary me-2">Simpan</button>
+    <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+  </form>
+</div>
