@@ -1,0 +1,68 @@
+<div class="container mt-4">
+  <h4>Form Tambah Pembelian</h4>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label>Tanggal</label>
+      <input type="date" class="form-control" [(ngModel)]="purchase.date" name="date" required />
+    </div>
+
+    <div class="mb-3">
+      <label>Supplier</label>
+      <select class="form-select" [(ngModel)]="purchase.supplier" name="supplier" required>
+        <option value="">Pilih Supplier</option>
+        <option *ngFor="let s of suppliers" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+
+    <hr />
+    <h5>Tambah Produk</h5>
+    <div class="row g-2 mb-3">
+      <div class="col-md-4">
+        <select class="form-select" [(ngModel)]="newItem.productCode" name="productCode">
+          <option value="">Pilih Produk</option>
+          <option *ngFor="let p of products" [value]="p.code">{{ p.code }} - {{ p.name }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input type="number" class="form-control" placeholder="Qty" [(ngModel)]="newItem.qty" name="qty" min="1" />
+      </div>
+      <div class="col-md-3">
+        <input type="number" class="form-control" placeholder="Harga" [(ngModel)]="newItem.price" name="price" />
+      </div>
+      <div class="col-md-2">
+        <button type="button" class="btn btn-success w-100" (click)="addItem()">Tambah</button>
+      </div>
+    </div>
+
+    <table class="table table-bordered">
+      <thead class="table-light">
+        <tr>
+          <th>Kode</th>
+          <th>Nama</th>
+          <th>Qty</th>
+          <th>Harga</th>
+          <th>Total</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of purchase.items; let i = index">
+          <td>{{ item.code }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.qty }}</td>
+          <td>Rp {{ item.price | number }}</td>
+          <td>Rp {{ item.total | number }}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" (click)="removeItem(i)">Hapus</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h5>Total: Rp {{ totalAmount | number }}</h5>
+
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <button class="btn btn-secondary" type="button" (click)="back()">Batal</button>
+  </form>
+</div>

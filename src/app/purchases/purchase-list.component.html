@@ -1,0 +1,29 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Daftar Pembelian</h4>
+    <button class="btn btn-primary" (click)="goToAdd()">+ Tambah Pembelian</button>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Kode</th>
+        <th>Supplier</th>
+        <th>Tanggal</th>
+        <th>Total</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of purchases">
+        <td>{{ p.code }}</td>
+        <td>{{ p.supplier }}</td>
+        <td>{{ p.date }}</td>
+        <td>Rp {{ p.total | number }}</td>
+        <td>
+          <button class="btn btn-sm btn-info" (click)="goToDetail(p.id)">Detail</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
