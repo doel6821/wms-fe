@@ -17,13 +17,16 @@ import { CustomerDetailComponent } from './customer/customer-detail.component';
 import { SupplierListComponent } from './supplier/supplier-list.component';
 import { SupplierFormComponent } from './supplier/supplier-form.component';
 import { SupplierDetailComponent } from './supplier/supplier-detail.component';
+import { LocationListComponent } from './location/location-list.component';
+import { LocationFormComponent } from './location/location-form.component';
+import { ReportComponent } from './report/report.component';
+import { Register } from './auth/login/register';
 
 
 
 export const routes: Routes = [
-  { 
-    path: 'login', 
-    component: Login },
+  { path: 'login', component: Login },
+  { path: 'register', component: Register },
     {
       path: '',
       component: LayoutComponent,
@@ -46,7 +49,10 @@ export const routes: Routes = [
         { path: 'suppliers', component: SupplierListComponent },
         { path: 'suppliers/add', component: SupplierFormComponent },
         { path: 'suppliers/edit/:id', component: SupplierFormComponent },
-        { path: 'suppliers/detail/:id', component: SupplierDetailComponent }
+        { path: 'suppliers/detail/:id', component: SupplierDetailComponent },
+        { path: 'locations', component: LocationListComponent },
+        { path: 'locations/add', component: LocationFormComponent },
+        { path: 'reports', component: ReportComponent }
     ]
   },
   //{ path: '**', redirectTo: 'login' }

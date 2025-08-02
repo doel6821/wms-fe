@@ -1,0 +1,43 @@
+<div class="container mt-4">
+  <h4>Laporan</h4>
+
+  <form class="row g-3">
+    <div class="col-md-4">
+      <label>Dari Tanggal</label>
+      <input type="date" class="form-control" [(ngModel)]="period.from" name="from">
+    </div>
+    <div class="col-md-4">
+      <label>Sampai Tanggal</label>
+      <input type="date" class="form-control" [(ngModel)]="period.to" name="to">
+    </div>
+  </form>
+  <br>
+  <button class="btn btn-primary me-2" (click)="requestSalesReport()">Request Laporan Penjualan</button>
+  <button class="btn btn-success me-2" (click)="requestPurchaseReport()">Request Laporan Pembelian</button>
+  <button class="btn btn-warning" (click)="requestProfitLossReport()">Request Laporan Rugi Laba</button>
+  <br>
+  <br>
+  <table class="table table-striped">
+    <thead class="table-light">
+      <tr>
+        <th>Tanggal</th>
+        <th>Tipe Laporan</th>
+        <th>Periode</th>
+        <th>Nama File</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let report of reports">
+        <td>{{ report.date }}</td>
+        <td>{{ report.reportType }}</td>
+        <td>{{ report.periode }}</td>
+        <td>{{ report.fileName }}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-info" (click)="download(report.fileName)">Download</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+</div>

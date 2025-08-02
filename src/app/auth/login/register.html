@@ -1,0 +1,29 @@
+<div class="d-flex vh-100">
+  <div class="w-50 d-flex flex-column justify-content-center align-items-center p-5">
+    <div class="w-100" style="max-width: 400px;">
+        <h3 class="text-center mb-3">Register</h3>
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Toko</label>
+                <input type="email" class="form-control" placeholder="Masukkan nama Toko" autocomplete="store name" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" placeholder="Masukkan email" autocomplete="email"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" placeholder="Masukkan password" autocomplete="password"/>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Daftar</button>
+            <p>Sudah punya akun? <a href="#" (click)="goToLogin(); $event.preventDefault()">login disini!</a></p>
+        </form>
+    </div>
+  </div>
+
+  <div class="w-50 d-flex align-items-center justify-content-center text-white bg-primary">
+    <div class="text-center">
+      <img src="./wms_logo.png" alt="Logo WMS" class="mb-4" style="max-width: 120px;" />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="container mt-4">
+  <h4>Form Tambah Lokasi</h4>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label>Nama Lokasi</label>
+      <input class="form-control" [(ngModel)]="location.name" name="name" required />
+    </div>
+
+    <div class="mb-3">
+      <label>Keterangan</label>
+      <textarea class="form-control" [(ngModel)]="location.description" name="description"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary me-2">Simpan</button>
+    <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+  </form>
+</div>
