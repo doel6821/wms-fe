@@ -10,4 +10,12 @@ export class AuthService {
   login(credentials: LoginRequest) {
     return this.http.post(`${environment.apiBaseUrl}/login`, credentials);
   }
+
+  registerTenant(credentials: LoginRequest) {
+    return this.http.post(`${environment.apiBaseUrl}/register-tenant`, credentials);
+  }
+
+  registerUser(credentials: LoginRequest) {
+    return this.http.post(`${environment.apiBaseUrl}/register-user`, credentials);
+  }
 }
