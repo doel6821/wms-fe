@@ -1,0 +1,52 @@
+<div class="container mt-4">
+  <div class="d-flex align-items-center mb-4">
+    <button type="button" class="btn btn-link me-3 p-0" (click)="back()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h4 class="mb-0">Rincian Lokasi</h4>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Memuat detail lokasi...</p>
+  </div>
+
+  <!-- Location Detail -->
+  <div *ngIf="!isLoading" class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">{{ location.name }}</h5>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-warning btn-sm" (click)="goToEdit()">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label text-muted">Kode Lokasi</label>
+            <p class="fw-bold">{{ location.code || '-' }}</p>
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-muted">Nama Lokasi</label>
+            <p class="fw-bold">{{ location.name || '-' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-warning" (click)="goToEdit()">
+          <i class="fas fa-edit"></i> Edit Lokasi
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="back()">
+          <i class="fas fa-arrow-left"></i> Kembali ke Daftar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

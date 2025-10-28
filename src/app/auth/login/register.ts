@@ -38,16 +38,30 @@ export class Register {
     this.auth.registerTenant(this.request).subscribe({
       next: (res: any) => {
         console.log(res)
-        if (res.meta.code != '2000100') {
+        if (res.meta.code == '2000100') {
+          console.log("register sukses")
+          this.router.navigate(['/login']);
+        } else if (res.meta.code == '4000103') { 
+          Swal.fire({
+            icon: 'error',
+            title: 'Register Gagal',
+            text: "Email sudah terdaftar, silahkan login",
+            confirmButtonColor: '#d33'
+          });
+        } else if (res.meta.code == '4000104') { 
+          Swal.fire({
+            icon: 'error',
+            title: 'Register Gagal',
+            text: "Nama toko sudah terdaftar, silahkan mendaftar melalu admin toko",
+            confirmButtonColor: '#d33'
+          });
+        } else {
           Swal.fire({
             icon: 'error',
             title: 'Register Gagal',
             text: res.Meta.Message,
             confirmButtonColor: '#d33'
           });
-        } else {
-          console.log("register sukses")
-          this.router.navigate(['/login']);
         }
       },
       error: (err) => {

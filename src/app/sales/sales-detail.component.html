@@ -1,6 +1,106 @@
 <div class="container mt-4">
-  <h4>Detail Penjualan</h4>
-  <p><strong>ID Penjualan:</strong> {{ saleId }}</p>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Rincian Sales Order</h4>
+    <div>
+      <button class="btn btn-warning me-2" (click)="edit()" *ngIf="salesOrder">
+        <i class="fas fa-edit"></i> Edit
+      </button>
+      <button class="btn btn-secondary" (click)="back()">
+        <i class="fas fa-arrow-left"></i> Kembali
+      </button>
+    </div>
+  </div>
 
-  <!-- Tempelkan detail produk, customer, total, dan item di sini -->
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Sales Order Details -->
+  <div *ngIf="!isLoading && salesOrder" class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Informasi Sales Order</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <table class="table table-borderless">
+            <tr>
+              <td width="30%"><strong>ID:</strong></td>
+              <td>{{ salesOrder.id }}</td>
+            </tr>
+            <tr>
+              <td><strong>Customer:</strong></td>
+              <td>{{ salesOrder.customer?.name }}</td>
+            </tr>
+            <tr>
+              <td><strong>Tanggal:</strong></td>
+              <td>{{ salesOrder.orderDate | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <table class="table table-borderless">
+            <tr>
+              <td width="30%"><strong>Subtotal:</strong></td>
+              <td>Rp {{ (salesOrder.amount || 0) | number:'1.0-0' }}</td>
+            </tr>
+            <tr>
+              <td><strong>Diskon:</strong></td>
+              <td>{{ (salesOrder.discount || 0) | number:'1.0-0' }}%</td>
+            </tr>
+            <tr>
+              <td><strong>Total:</strong></td>
+              <td><strong>Rp {{ (salesOrder.totalAmount  || 0) | number:'1.0-0' }}</strong></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Items -->
+  <div *ngIf="!isLoading && salesOrder && salesOrder.items && salesOrder.items.length > 0" class="card mt-4">
+    <div class="card-header">
+      <h5 class="mb-0">Rincian Item Order</h5>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>Kode Produk</th>
+            <th>Nama Produk</th>
+            <th>Jumlah Order</th>
+            <th>Jumlah Teralokasi</th>
+            <th>Jumlah Back Order</th>
+            <th>Jumlah TerPacking</th>
+            <th>Jumlah Invoice</th>
+            <th>Harga</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of salesOrder.items">
+            <td>{{ item.product?.code || 'N/A' }}</td>
+            <td>{{ item.product?.name }}</td>
+            <td>{{ item.orderQty }}</td>
+            <td>{{ item.allocationOrderQty }}</td>
+            <td>{{ item.backOrderQty }}</td>
+            <td>{{ item.packingOrderQty }}</td>
+            <td>{{ item.invoiceOrderQty }}</td>
+            <td>Rp {{ (item.price || 0) | number:'1.0-0' }}</td>
+            <td>Rp {{ (item.totalAmount || 0) | number:'1.0-0' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- No Data State -->
+  <div *ngIf="!isLoading && !salesOrder" class="alert alert-info">
+    <h5>Data tidak ditemukan</h5>
+    <p>Sales order dengan ID {{ salesOrderId }} tidak ditemukan.</p>
+  </div>
 </div>

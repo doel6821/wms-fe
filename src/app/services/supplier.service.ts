@@ -1,14 +1,15 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environtments/environtment';
-import { RequestSupplier } from '../models/supplier.model';
+import { Supplier, RequestSupplier, SupplierQueryParams } from '../models/supplier.model';
+import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class SupplierService {
-  private http = inject(HttpClient); // ✅ ini yang direkomendasikan di standalone
+  private http = inject(HttpClient);
 
   registerSupplier(request: RequestSupplier) {
-    return this.http.post(`${environment.apiBaseUrl}/supplier`, request);
+    return this.http.post(`${environment.apiBaseUrl}/supplier/`, request);
   }
 
   getSupplierList(filter?: { name?: string; page?: number; limit?: number }) {
@@ -17,17 +18,57 @@ export class SupplierService {
     if (filter?.name) {
       params = params.set('name', filter.name);
     }
-    if (filter?.page) {
-      params = params.set('page', filter.page);
+   if (filter?.page !== undefined) {
+      params = params.set('page', filter.page.toString());
     }
-    if (filter?.limit) {
-      params = params.set('limit', filter.limit);
+    if (filter?.limit !== undefined) {
+      params = params.set('limit', filter.limit.toString());
     }
-    return this.http.get(`${environment.apiBaseUrl}/supplier/all`, { params });
+    // return this.http.get(`${environment.apiBaseUrl}/supplier/all`, { params });
+    return this.http.get(`${environment.apiBaseUrl}/supplier/all`, { 
+          params,
+          responseType: 'text'
+        }).pipe(
+          map(response => {
+            try {
+              // Handle concatenated JSON responses from backend
+              const jsonObjects = response.split('}{');
+              if (jsonObjects.length > 1) {
+                // Fix the split by adding back the braces
+                for (let i = 0; i < jsonObjects.length; i++) {
+                  if (i > 0) jsonObjects[i] = '{' + jsonObjects[i];
+                  if (i < jsonObjects.length - 1) jsonObjects[i] = jsonObjects[i] + '}';
+                }
+                
+                // Parse each JSON and find the successful one
+                for (const jsonStr of jsonObjects) {
+                  try {
+                    const parsed = JSON.parse(jsonStr);
+                    if (parsed.meta?.code === "2000100") {
+                      return parsed;
+                    }
+                  } catch (e) {
+                    console.warn('Failed to parse JSON fragment:', jsonStr);
+                  }
+                }
+              }
+              
+              return JSON.parse(response);
+            } catch (error) {
+              console.error('JSON Parse Error:', error);
+              console.error('Raw response:', response);
+              throw error;
+            }
+          })
+        );
   }
 
   getSupplierByID(id: number) {
     return this.http.get(`${environment.apiBaseUrl}/supplier/${id}`);
+  }
+
+  updateSupplier(id: number, request: RequestSupplier) {
+    return this.http.put(`${environment.apiBaseUrl}/supplier/${id}`, request);
   }
 
   deleteSupplierByID(id: number) {

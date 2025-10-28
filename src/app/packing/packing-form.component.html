@@ -1,0 +1,74 @@
+<div class="container mt-4">
+  <h4>{{ isEditMode ? 'Edit Packing Order' : 'Tambah Packing Order' }}</h4>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Informasi Pelanggan</h5>
+        
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Pelanggan *</label>
+            <select class="form-select" formControlName="customerId" (change)="onCustomerChange(+$any($event.target).value)">
+              <option value="">Pilih Pelanggan</option>
+              <option *ngFor="let s of customers" [value]="s.id">{{ s.name }}</option>
+            </select>
+            <div *ngIf="form.get('customerId')?.invalid && form.get('customerId')?.touched" class="text-danger">
+              Pelanggan wajib dipilih
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tanggal Order</th>
+                <th>Nama Pelanggan</th>
+                <th>Alokasi Item</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of salesOrders" [ngClass]="{ 'table-secondary': isLoading }">
+                <td>{{ s.id }}</td>
+                <td>{{ s.orderDate| date:'dd/MM/yyyy' }}</td>
+                <td>{{ s.customer?.name }}</td>
+                <td>{{ s.items?.length| number }}</td>
+                <td>
+                  <input type="checkbox" [value]="s.id" (change)="onCheckboxChange($event, s.id)" /> packing
+
+                </td>
+              </tr>
+              <tr *ngIf="salesOrders.length === 0 && !isLoading">
+                <td colspan="6" class="text-center">Tidak ada data alokasi order</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <br>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || salesOrderIds.length === 0">
+        {{ isEditMode ? 'Update' : 'Simpan' }}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+    </div>
+  </form>
+</div>

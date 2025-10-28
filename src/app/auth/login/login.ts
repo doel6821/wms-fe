@@ -42,6 +42,7 @@ export class Login {
         console.log(res)
         if (res.meta.code == '2000100') {
           localStorage.setItem('token', res.data.token);
+          localStorage.setItem('role', res.data.role); 
           this.router.navigate(['/dashboard']);
         } else {
             Swal.fire({

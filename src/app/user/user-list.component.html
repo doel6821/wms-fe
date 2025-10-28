@@ -1,0 +1,91 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Manajemen User</h4>
+    <button class="btn btn-primary" (click)="openAddModal()">
+      <i class="fas fa-plus"></i> Tambah User
+    </button>
+  </div>
+
+  <div class="mb-3">
+    <input type="text" class="form-control" placeholder="Cari berdasarkan email..." [(ngModel)]="filterEmail" (ngModelChange)="loadUsers()" />
+  </div>
+
+  <div class="table-responsive" *ngIf="!isLoading; else loading">
+    <table class="table table-striped">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-warning" (click)="openEditModal(user)">Edit Role</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #loading>
+    <div class="text-center">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  </ng-template>
+
+  <!-- Modal -->
+  <!-- Modal -->
+    <div
+    *ngIf="isModalOpen"
+    class="modal fade show d-block"
+    tabindex="-1"
+    role="dialog"
+    style="background: rgba(0,0,0,0.5);"
+    >
+    <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">{{ modalMode === 'add' ? 'Tambah User' : 'Edit Role User' }}</h5>
+              <button type="button" class="btn-close" (click)="closeModal()"></button>
+          </div>
+          <div class="modal-body">
+              <form [formGroup]="form">
+                  <div class="mb-3">
+                      <label class="form-label">Email</label>
+                      <input type="email" class="form-control" formControlName="email" [readonly]="modalMode === 'edit'">
+                  </div>
+
+                  <div class="mb-3" *ngIf="modalMode === 'add'">
+                      <label class="form-label">Password</label>
+                      <input type="password" class="form-control" formControlName="password">
+                  </div>
+
+                  <div class="mb-3">
+                      <label class="form-label">Role</label>
+                      <select class="form-select" formControlName="role">
+                        <option value="">Pilih Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="finance">Staff Finance</option>
+                        <option value="sales">Staff Penjualan</option>
+                        <option value="warehouse">Staff Gudang</option>
+                      </select>
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button class="btn btn-secondary" (click)="closeModal()">Batal</button>
+              <button class="btn btn-primary" (click)="saveUser()">Simpan</button>
+          </div>
+        </div>
+       </div>
+    </div>
+</div>
+
+
+

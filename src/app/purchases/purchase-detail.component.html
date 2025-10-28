@@ -1,6 +1,89 @@
 <div class="container mt-4">
-  <h4>Detail Pembelian</h4>
-  <p>ID Pembelian: {{ purchaseId }}</p>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Detail Purchase Order</h4>
+    <div class="btn-group">
+      <!-- <button class="btn btn-warning" (click)="edit()" *ngIf="purchaseOrder">Edit</button> -->
+      <button class="btn btn-secondary" (click)="back()">Kembali</button>
+    </div>
+  </div>
 
-  <!-- Isi detail PO bisa ditambahkan: supplier, produk, total, dll -->
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Purchase Order Details -->
+  <div *ngIf="purchaseOrder && !isLoading">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Informasi Purchase Order</h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <strong>ID: </strong> {{ purchaseOrder.id }}
+          </div>
+          <div class="col-md-6">
+            <strong>Supplier: </strong> {{ purchaseOrder.supplier.name }}
+          </div>
+          <div class="col-md-6">
+            <strong>Subtotal: </strong> Rp {{ purchaseOrder.amount | number }}
+          </div>
+          <div class="col-md-6">
+            <strong>Discount: </strong> {{ purchaseOrder.discount | number }}  %
+          </div>
+          <div class="col-md-12">
+            <strong>Total Amount: </strong> <span class="text-primary fw-bold">Rp {{ purchaseOrder.totalAmount | number }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Items Purchase Order</h5>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Produk Name</th>
+                <th>Order Quantity</th>
+                <th>Receive Quantity</th>
+                <th>Stocked Quantity</th>
+                <th>Harga Satuan</th>
+                <th>Sub Total</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of purchaseOrder.items">
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.orderQty | number }}</td>
+                <td>{{ item.receiveOrderQty | number }}</td>
+                <td>{{ item.stockedOrderQty | number }}</td>
+                <td>Rp {{ item.price | number }}</td>
+                <td>Rp {{ item.subTotal | number }}</td>
+                <td>Rp {{ item.totalAmount | number }}</td>
+              </tr>
+              <tr *ngIf="!purchaseOrder.items || purchaseOrder.items.length === 0">
+                <td colspan="4" class="text-center">Tidak ada item</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="fw-bold">
+                <td colspan="3" class="text-end">Total:</td>
+                <td>Rp {{ purchaseOrder.totalAmount | number }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Not Found Message -->
+  <div *ngIf="!purchaseOrder && !isLoading" class="alert alert-warning">
+    <h5>Purchase Order tidak ditemukan</h5>
+    <p>Purchase Order dengan ID {{ purchaseId }} tidak ditemukan dalam sistem.</p>
+  </div>
 </div>

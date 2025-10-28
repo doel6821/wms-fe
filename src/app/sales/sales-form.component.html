@@ -1,67 +1,199 @@
 <div class="container mt-4">
-  <h4>Tambah Penjualan</h4>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>{{ isEditMode ? 'Edit' : 'Tambah' }} Sales Order</h4>
+    <button class="btn btn-secondary" (click)="back()">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </button>
+  </div>
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 
-  <form (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <label class="form-label">Tanggal</label>
-      <input type="date" class="form-control" [(ngModel)]="sale.date" name="date" required />
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <!-- Sales Order Information -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Informasi Sales Order</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="date" class="form-label">Tanggal <span class="text-danger">*</span></label>
+              <input 
+                type="date" 
+                class="form-control" 
+                id="date" 
+                formControlName="date"
+                [class.is-invalid]="form.get('date')?.invalid && form.get('date')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="form.get('date')?.invalid && form.get('date')?.touched">
+                Tanggal harus diisi
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="customerId" class="form-label">Customer <span class="text-danger">*</span></label>
+              <select 
+                class="form-control" 
+                id="customerId" 
+                formControlName="customerId"
+                [class.is-invalid]="form.get('customerId')?.invalid && form.get('customerId')?.touched"
+              >
+                <option value="">Pilih Customer</option>
+                <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="form.get('customerId')?.invalid && form.get('customerId')?.touched">
+                Customer harus dipilih
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="discount" class="form-label">Diskon</label>
+              <input 
+                type="number" 
+                class="form-control" 
+                id="discount" 
+                formControlName="discount"
+                min="0"
+                (blur)="calculateTotals()"
+                [disabled]="true"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label">Customer</label>
-      <select class="form-select" [(ngModel)]="sale.customer" name="customer" required>
-        <option value="">Pilih Customer</option>
-        <option *ngFor="let c of customers" [value]="c">{{ c }}</option>
-      </select>
+    <!-- Order Items -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Items Order</h5>
+        <button type="button" class="btn btn-sm btn-success" (click)="addOrderItem()">
+          <i class="fas fa-plus"></i> Tambah Item
+        </button>
+      </div>
+      <div class="card-body">
+        <div formArrayName="orderItems">
+          <div *ngFor="let itemGroup of orderItems.controls; let i = index" 
+               [formGroupName]="i" 
+               class="row mb-3 border-bottom pb-3">
+            
+            <div class="col-md-3">
+              <label class="form-label">Produk <span class="text-danger">*</span></label>
+              <select 
+                class="form-control" 
+                formControlName="productId"
+                [class.is-invalid]="itemGroup.get('productId')?.invalid && itemGroup.get('productId')?.touched"
+              >
+                <option value="">Pilih Produk</option>
+                <option *ngFor="let product of products" [value]="product.id">
+                  {{ product.name }} ({{ product.code }})
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="itemGroup.get('productId')?.invalid && itemGroup.get('productId')?.touched">
+                Produk harus dipilih
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Qty <span class="text-danger">*</span></label>
+              <input 
+                type="number" 
+                class="form-control" 
+                formControlName="orderQty"
+                min="1"
+                [class.is-invalid]="itemGroup.get('orderQty')?.invalid && itemGroup.get('orderQty')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="itemGroup.get('orderQty')?.invalid && itemGroup.get('orderQty')?.touched">
+                Qty minimal 1
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Harga <span class="text-danger">*</span></label>
+              <input 
+                type="number" 
+                class="form-control" 
+                formControlName="price"
+                min="0"
+                readonly
+              >
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Total</label>
+              <input 
+                type="number" 
+                class="form-control" 
+                formControlName="totalAmount"
+                readonly
+              >
+            </div>
+
+            <div class="col-md-3 d-flex align-items-end">
+              <button 
+                type="button" 
+                class="btn btn-danger btn-sm" 
+                (click)="removeOrderItem(i)"
+                [disabled]="orderItems.length <= 1"
+              >
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="orderItems.length === 0" class="text-center text-muted py-4">
+            Belum ada item yang ditambahkan
+          </div>
+        </div>
+      </div>
     </div>
 
-    <hr />
-    <h5>Tambah Produk</h5>
-    <div class="row g-2 align-items-center mb-3">
-      <div class="col-md-5">
-        <select class="form-select" [(ngModel)]="newItem.productCode" name="productCode">
-          <option value="">Pilih Produk</option>
-          <option *ngFor="let p of products" [value]="p.code">
-            {{ p.code }} - {{ p.name }}
-          </option>
-        </select>
+    <!-- Summary -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Ringkasan</h5>
       </div>
-      <div class="col-md-3">
-        <input type="number" class="form-control" [(ngModel)]="newItem.qty" name="qty" min="1" />
-      </div>
-      <div class="col-md-2">
-        <button type="button" class="btn btn-success w-100" (click)="addItem()">+ Tambah</button>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-8"></div>
+          <div class="col-md-4">
+            <table class="table table-borderless">
+              <tr>
+                <td><strong>Subtotal:</strong></td>
+                <td class="text-end">Rp {{ (form.get('amount')?.value || 0) | number:'1.0-0' }}</td>
+              </tr>
+              <tr>
+                <td><strong>Diskon:</strong></td>
+                <td class="text-end">Rp {{ (form.get('discount')?.value * form.get('amount')?.value / 100|| 0) | number:'1.0-0' }}</td>
+              </tr>
+              <tr class="table-info">
+                <td><strong>Total:</strong></td>
+                <td class="text-end"><strong>Rp {{ (form.get('totalAmount')?.value || 0) | number:'1.0-0' }}</strong></td>
+              </tr>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
-    <table class="table table-bordered">
-      <thead class="table-light">
-        <tr>
-          <th>Kode</th>
-          <th>Nama Produk</th>
-          <th>Harga</th>
-          <th>Qty</th>
-          <th>Total</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of sale.items; let i = index">
-          <td>{{ item.code }}</td>
-          <td>{{ item.name }}</td>
-          <td>Rp {{ item.price | number }}</td>
-          <td>{{ item.qty }}</td>
-          <td>Rp {{ item.total | number }}</td>
-          <td>
-            <button class="btn btn-sm btn-danger" (click)="removeItem(i)">Hapus</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h5>Total: Rp {{ totalAmount | number }}</h5>
-
-    <button type="submit" class="btn btn-primary me-2">Simpan Penjualan</button>
-    <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="form.invalid || orderItems.length === 0"
+      >
+        <i class="fas fa-save"></i> {{ isEditMode ? 'Update' : 'Simpan' }}
+      </button>
+    </div>
   </form>
 </div>

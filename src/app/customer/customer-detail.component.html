@@ -1,5 +1,52 @@
 <div class="container mt-4">
-  <h4>Detail Customer</h4>
-  <p>ID Customer: {{ customerId }}</p>
-  <!-- Tambahkan detail informasi customer di sini -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Rincian Pelanggan</h4>
+    <div>
+      <button class="btn btn-warning me-2" (click)="goToEdit()">Edit</button>
+      <button class="btn btn-secondary" (click)="back()">Kembali</button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && customer.id" class="card">
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-3"><strong>ID:</strong></div>
+        <div class="col-md-9">{{ customer.id }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-3"><strong>Nama:</strong></div>
+        <div class="col-md-9">{{ customer.name }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-3"><strong>Email:</strong></div>
+        <div class="col-md-9">{{ customer.email }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-3"><strong>No. HP:</strong></div>
+        <div class="col-md-9">{{ customer.phone }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-3"><strong>Alamat:</strong></div>
+        <div class="col-md-9">{{ customer.address }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-3"><strong>Diskon:</strong></div>
+        <div class="col-md-9">{{ customer.discountPercent }}%</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-3"><strong>Term of Payment:</strong></div>
+        <div class="col-md-9">{{ customer.termOfPayment }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-3"><strong>Cancel on Back Order:</strong></div>
+        <div class="col-md-9">{{ customer.cancelOnBackOrder ? 'Yes' : 'No' }}</div>
+      </div>
+    </div>
+  </div>
 </div>

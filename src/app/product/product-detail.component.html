@@ -1,58 +1,449 @@
-<div class="container">
-  <h4 class="mb-4">Informasi Produk</h4>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Rincian Produk</h4>
+    <div class="btn-group">
+      <button type="button" class="btn btn-outline-secondary" (click)="back()">
+        <i class="fas fa-arrow-left"></i> Kembali
+      </button>
+      <button type="button" class="btn btn-warning" (click)="goToEdit(product?.id!)" *ngIf="product?.id">
+        <i class="fas fa-edit"></i> Edit
+      </button>
+    </div>
+  </div>
 
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab === 'info'" (click)="activeTab = 'info'">Informasi Umum</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab === 'harga'" (click)="activeTab = 'harga'">Harga</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab === 'demand'" (click)="activeTab = 'demand'">History Permintaan</a>
-    </li>
-  </ul>
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="text-center my-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Memuat data produk...</p>
+  </div>
 
-  <div class="tab-content p-3 border border-top-0">
-    <!-- Tab 1: Informasi Umum -->
-    <div *ngIf="activeTab === 'info'">
-      <p><strong>Kode Produk:</strong> PRD-001</p>
-      <p><strong>Nama Produk:</strong> Minyak Goreng ABC 1L</p>
-      <p><strong>Stok:</strong></p>
-      <ul>
-        <li>On Hand: 120</li>
-        <li>On Allocation: 15</li>
-        <li>Back Order: 10</li>
-        <li>On Packing: 5</li>
-        <li>On Purchase: 50</li>
+  <!-- Product Details -->
+  <div *ngIf="!isLoading && product" class="row">
+    <!-- Tab Navigation -->
+    <div class="col-12 mb-3">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'info'" (click)="activeTab = 'info'">
+            <i class="fas fa-info-circle"></i> Informasi Umum
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'harga'" (click)="activeTab = 'harga'">
+            <i class="fas fa-money-bill"></i> Harga
+          </a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'stock'" (click)="activeTab = 'stock'">
+            <i class="fas fa-boxes"></i> Stok
+          </a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'demand'" (click)="activeTab = 'demand'">
+            <i class="fas fa-chart-line"></i> History Demand
+          </a>
+        </li>
       </ul>
     </div>
 
-    <!-- Tab 2: Harga -->
-    <div *ngIf="activeTab === 'harga'">
-      <p><strong>Harga Eceran:</strong> Rp15.000</p>  
-      <p><strong>Harga Beli Terakhir:</strong> Rp12.000</p>
-      <p><strong>Rata-rata Harga (Average Cost):</strong> Rp11.500</p>
-    </div>
+    <!-- Tab Content -->
+    <div class="col-12">
+      <div class="tab-content border border-top-0 p-4">
+        
+        <!-- Tab 1: Informasi Umum -->
+        <div *ngIf="activeTab === 'info'" class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h6 class="mb-0">Informasi Dasar</h6>
+              </div>
+              <div class="card-body">
+                <table class="table table-borderless mb-0">
+                  <tr>
+                    <td><strong>ID Produk:</strong></td>
+                    <td>{{ product.id }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Kode Produk:</strong></td>
+                    <td>{{ product.code || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Nama Produk:</strong></td>
+                    <td>{{ product.name || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Supplier:</strong></td>
+                    <td>{{ product.supplier?.name }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lead Time:</strong></td>
+                    <td>{{ product.leadTimeDays || 0 }} hari</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
 
-    <!-- Tab 3: History Permintaan -->
-    <div *ngIf="activeTab === 'demand'">
-      <p><strong>Permintaan Bulan Ini (N):</strong> 80 unit</p>
-      <p><strong>Permintaan 12 Bulan Sebelumnya:</strong></p>
-      <table class="table table-bordered table-sm">
-        <thead class="table-light">
-          <tr>
-            <th>Bulan</th>
-            <th>Jumlah Permintaan</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let month of ['N-1','N-2','N-3','N-4','N-5','N-6','N-7','N-8','N-9','N-10','N-11','N-12']; let i = index">
-            <td>{{ month }}</td>
-            <td>{{ 100 - i * 5 }} unit</td>
-          </tr>
-        </tbody>
-      </table>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h6 class="mb-0">Ringkasan Stok</h6>
+              </div>
+              <div class="card-body">
+                <table class="table table-borderless mb-0">
+                  <tr>
+                    <td><strong>Total Stok Tersedia:</strong></td>
+                    <td class="text-success fw-bold">{{ product.stockOnHand || 0 }} unit</td>
+                    <td>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openModal('available')">Detail</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Stok Dialokasikan:</strong></td>
+                    <td class="text-warning">{{ product.stockAllocation || 0 }} unit</td>
+                    <td>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openModal('allocation')" >Detail</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Stok Dipacking:</strong></td>
+                    <td class="text-warning">{{ product.stockPacking || 0 }} unit</td>
+                    <td>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openModal('packing')">Detail</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Pembelian:</strong></td>
+                    <td class="text-warning">{{ product.stockOnPurchase || 0 }} unit</td>
+                    <td>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openModal('purchase')">Detail</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Penerimaan:</strong></td>
+                    <td class="text-warning">{{ product.stockOnReceive || 0 }} unit</td>
+                    <td>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openModal('receive')">Detail</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Back Order:</strong></td>
+                    <td class="text-danger">{{ product.stockBackOrder || 0 }} unit</td>
+                    <td>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openModal('backorder')">Detail</button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Harga -->
+        <div *ngIf="activeTab === 'harga'" class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h6 class="mb-0">Informasi Harga</h6>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="text-center p-3 border rounded">
+                      <h5 class="text-success">{{ product.hetPrice | currency:'IDR' :'symbol':'1.0-0' }}</h5>
+                      <small class="text-muted">Harga Jual (HET Price)</small>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="text-center p-3 border rounded">
+                      <h5 class="text-danger">{{ product.costPrice | currency:'IDR' :'symbol':'1.0-0' }}</h5>
+                      <small class="text-muted">Harga Beli (Cost Price)</small>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="text-center p-3 border rounded">
+                      <h5 class="text-primary">{{ product.avgPrice | currency:'IDR' :'symbol':'1.0-0' }}</h5>
+                      <small class="text-muted">Harga Rata-rata</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4" *ngIf="product.hetPrice && product.costPrice">
+                  <h6>Analisis Margin:</h6>
+                  <div class="progress mb-2">
+                    <div class="progress-bar bg-success" 
+                         [style.width.%]="((product.hetPrice! - product.costPrice!) / product.hetPrice!) * 100"
+                         role="progressbar">
+                      {{ (((product.hetPrice! - product.costPrice!) / product.hetPrice!) * 100).toFixed(1) }}% Margin
+                    </div>
+                  </div>
+                  <small class="text-muted">
+                    Keuntungan: {{ (product.hetPrice! - product.costPrice!) | currency:'IDR':'symbol':'1.0-0' }}
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tab 3: Demand History -->
+        <div *ngIf="activeTab === 'demand'" class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">History Demand (13 Bulan Terakhir)</h6>
+                <span class="badge bg-info">Periode: {{ product.demands?.month }}</span>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered align-middle text-center">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Bulan</th>
+                        <th>Permintaan</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>Bulan Berjalan</strong></td>
+                        <td class="fw-bold text-success">{{ product.demands?.nQty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 1) }}</td>
+                        <td>{{ product.demands?.n1Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 2) }}</td>
+                        <td>{{ product.demands?.n2Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 3) }}</td>
+                        <td>{{ product.demands?.n3Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 4) }}</td>
+                        <td>{{ product.demands?.n4Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 5) }}</td>
+                        <td>{{ product.demands?.n5Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 6) }}</td>
+                        <td>{{ product.demands?.n6Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 7) }}</td>
+                        <td>{{ product.demands?.n7Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 8) }}</td>
+                        <td>{{ product.demands?.n8Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 9) }}</td>
+                        <td>{{ product.demands?.n9Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 10) }}</td>
+                        <td>{{ product.demands?.n10Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 11) }}</td>
+                        <td>{{ product.demands?.n11Qty || 0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ getPreviousMonth(product.demands?.month, 12) }}</td>
+                        <td>{{ product.demands?.n12Qty || 0 }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
+
+  <!-- Error Message -->
+  <div *ngIf="!isLoading && !product" class="text-center my-5">
+    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+    <h5>Data produk tidak ditemukan</h5>
+    <button class="btn btn-primary mt-3" (click)="back()">
+      <i class="fas fa-arrow-left"></i> Kembali ke Daftar Produk
+    </button>
+  </div>
+
+  <!-- Modal -->
+
+  <div
+    *ngIf="isModalOpen"
+    class="modal fade show d-block"
+    tabindex="-1"
+    role="dialog"
+    style="background: rgba(0,0,0,0.5);"
+    >
+    <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">{{ modalTitle }}</h5>
+              <button type="button" class="btn-close" (click)="closeModal()"></button>
+          </div>
+          <div class="modal-body">
+            <!-- STOCK TERSEDIA -->
+            <div *ngIf="modalType === 'available'">
+              <!-- <h6>Lokasi Barang</h6> -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Lokasi</th>
+                    <th class="text-end">Jumlah</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let loc of modalData">
+                    <td>{{ loc.locationCode }}</td>
+                    <td class="text-end">{{ loc.qtty }}</td>
+                  </tr>
+                  <tr *ngIf="!modalData?.length">
+                    <td colspan="2" class="text-center text-muted">Tidak ada data lokasi</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- ALOKASI -->
+            <div *ngIf="modalType === 'allocation'">
+              <!-- <h6>Sales Order Teralokasi</h6> -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Pelanggan</th>
+                    <th>Sales Order Id</th>
+                    <th class="text-end">Jumlah</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let pk of modalData">
+                    <td>{{ pk.customer.name }}</td>
+                    <td>{{ pk.salesOrderId }}</td>
+                    <td class="text-end">{{ pk.allocationOrderQty }}</td>
+                  </tr>
+                  <tr *ngIf="!modalData?.length">
+                    <td colspan="3" class="text-center text-muted">Tidak ada alokasi aktif</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- PACKING -->
+            <div *ngIf="modalType === 'packing'">
+              <!-- <h6>Sales Order Sedang Packing</h6> -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Pelanggan</th>
+                    <th>Sales Order Id</th>
+                    <th class="text-end">Jumlah</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let pk of modalData">
+                    <td>{{ pk.customer.name }}</td>
+                    <td>{{ pk.salesOrderId }}</td>
+                    <td class="text-end">{{ pk.packingOrderQty }}</td>
+                  </tr>
+                  <tr *ngIf="!modalData?.length">
+                    <td colspan="3" class="text-center text-muted">Tidak ada item dalam packing</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- PEMBELIAN -->
+            <div *ngIf="modalType === 'purchase'">
+              <!-- <h6>Daftar Purchase Order</h6> -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Supplier</th>
+                    <th>PO Number</th>
+                    <th class="text-end">Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let po of modalData">
+                    <td>{{ po.supplier.name }}</td>
+                    <td>{{ po.purchaseOrderId }}</td>
+                    <td class="text-end">{{ po.orderQty }}</td>
+                  </tr>
+                  <tr *ngIf="!modalData?.length">
+                    <td colspan="3" class="text-center text-muted">Tidak ada PO aktif</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- RECEIVE -->
+            <div *ngIf="modalType === 'receive'">
+              <!-- <h6>Daftar Purchase Order</h6> -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <!-- <th>Supplier</th> -->
+                    <th>PO Number</th>
+                    <th class="text-end">Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let re of modalData">
+                    <!-- <td>{{ po.supplier.name }}</td> -->
+                    <td>{{ re.purchaseOrderId }}</td>
+                    <td class="text-end">{{ re.receiveOrderQty }}</td>
+                  </tr>
+                  <tr *ngIf="!modalData?.length">
+                    <td colspan="3" class="text-center text-muted">Tidak ada Penerimaan Barang</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- BACK ORDER -->
+            <div *ngIf="modalType === 'backorder'">
+              <!-- <h6>Daftar Back Order</h6> -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Sales Order</th>
+                    <th class="text-end">Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let bo of modalData">
+                    <td>{{ bo.customer.name }}</td>
+                    <td>{{ bo.salesOrderId }}</td>
+                    <td class="text-end">{{ bo.backOrderQty }}</td>
+                  </tr>
+                  <tr *ngIf="!modalData?.length">
+                    <td colspan="3" class="text-center text-muted">Tidak ada back order</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+              
+          </div>
+          <div class="modal-footer">
+              <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+          </div>
+        </div>
+       </div>
+    </div>
 </div>
+
+
+

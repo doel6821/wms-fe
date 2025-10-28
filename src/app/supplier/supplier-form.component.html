@@ -1,23 +1,97 @@
 <div class="container mt-4">
-  <h4>Form Tambah/Edit Supplier</h4>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>{{ isEditMode ? 'Edit Supplier' : 'Tambah Supplier' }}</h4>
+    <button class="btn btn-secondary" (click)="back()">Kembali</button>
+  </div>
 
-  <form (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <label>Nama Supplier</label>
-      <input class="form-control" [(ngModel)]="supplier.name" name="name" required />
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label class="form-label">Nama Supplier *</label>
+          <input formControlName="name" class="form-control" placeholder="Masukkan nama supplier" />
+          <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="text-danger small">
+            Nama supplier wajib diisi
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label class="form-label">Email *</label>
+          <input type="email" formControlName="email" class="form-control" placeholder="Masukkan email" />
+          <div *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="text-danger small">
+            <span *ngIf="form.get('email')?.hasError('required')">Email wajib diisi</span>
+            <span *ngIf="form.get('email')?.hasError('email')">Format email tidak valid</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label class="form-label">No. HP *</label>
+          <input formControlName="phone" class="form-control" placeholder="Masukkan nomor HP" />
+          <div *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched" class="text-danger small">
+            No. HP wajib diisi
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label class="form-label">Diskon (%)</label>
+          <input type="number" formControlName="discountPercent" class="form-control" placeholder="0" min="0" max="100" />
+        </div>
+      </div>
     </div>
 
     <div class="mb-3">
-      <label>Telepon</label>
-      <input class="form-control" [(ngModel)]="supplier.phone" name="phone" />
+      <label class="form-label">Alamat</label>
+      <textarea formControlName="address" class="form-control" rows="3" placeholder="Masukkan alamat lengkap"></textarea>
     </div>
 
-    <div class="mb-3">
-      <label>Alamat</label>
-      <textarea class="form-control" [(ngModel)]="supplier.address" name="address"></textarea>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label class="form-label">Term of Payment *</label>
+          <select formControlName="termOfPayment" class="form-control">
+            <option value="">Pilih term pembayaran</option>
+            <option value="cash">Cash</option>
+            <option value="7 hari">Kredit 7 hari</option>
+            <option value="15 hari">Kredit 15 hari</option>
+            <option value="30 hari">Kredit 30 hari</option>
+          </select>
+          <div *ngIf="form.get('termOfPayment')?.invalid && form.get('termOfPayment')?.touched" class="text-danger small">
+            Term of payment wajib dipilih
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="mb-3">
+          <div class="form-check mt-4">
+            <input type="checkbox" formControlName="cancelOnBackOrder" class="form-check-input" id="cancelOnBackOrder">
+            <label class="form-check-label" for="cancelOnBackOrder">
+              Cancel on Back Order
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <button type="submit" class="btn btn-primary me-2">Simpan</button>
-    <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+        {{ isEditMode ? 'Update' : 'Simpan' }}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+    </div>
   </form>
 </div>

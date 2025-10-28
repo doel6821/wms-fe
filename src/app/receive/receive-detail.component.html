@@ -1,0 +1,108 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Rincian Penerimaan Barang</h4>
+    <div class="btn-group">
+      <button class="btn btn-secondary" (click)="back()">Kembali</button>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Packing Order Details -->
+  <div *ngIf="receiveOrder && !isLoading">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Informasi Packing Order</h5>
+        
+        <div class="col-md-6">
+          <strong>ID: </strong> {{ receiveOrder.id }}
+        </div>
+        <div class="col-md-6">
+          <strong>Supplier: </strong> {{ receiveOrder.supplier?.name }}
+        </div>
+        <div class="col-md-6">
+          <strong>Tanggal penerimaan barang: </strong> {{ receiveOrder.receiveDate | date:'dd/MM/yyyy'}}
+        </div>
+        <div class="col-md-6">
+          <strong>Total Item: </strong>{{ receiveOrder.items?.length | number }}
+        </div>
+        <div class="col-md-6">
+          <strong>Status Receive: </strong>{{ receiveOrder.status }}
+        </div>
+      
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Items Penerimaan Barang</h5>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Purchase Order Id</th>
+                <th>Produk Name</th>
+                <th>Jumlah Penerimaan</th>
+                <th>Lokasi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of receiveOrder.items ; let i = index">
+                <td>{{ item.purchaseOrderId }}</td>
+                <td>{{ item.productName }}</td>
+                <td>{{ item.receiveOrderQty | number }}</td>
+                <td>
+                  <select
+                    class="form-select"
+                    [(ngModel)]="item.productLocation"
+                    name="location_{{ i }}"
+                  >
+                    <option value="" disabled selected>Pilih lokasi</option>
+                    <option *ngFor="let loc of locations" [value]="loc.code">
+                      {{ loc.code }}
+                    </option>
+                  </select>
+                </td>
+              </tr>
+              <tr *ngIf="!receiveOrder.items || receiveOrder.items.length === 0">
+                <td colspan="4" class="text-center">Tidak ada item</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- <div class="mt-3 text-center" *ngIf="receiveOrder.status === 'on process'">
+            <button 
+              class="btn btn-success w-50 " 
+              (click)="completeReceive(receiveOrder.id)" 
+            > Complete
+            </button>
+          </div> -->
+          <div class="mt-3 text-center" *ngIf="receiveOrder.status === 'on process'">
+            <button 
+              class="btn btn-success w-50"
+              [disabled]="!isAllLocationFilled()"
+              (click)="completeReceive(receiveOrder.id)"
+            >
+              Complete
+            </button>
+            <div *ngIf="!isAllLocationFilled()" class="text-danger mt-2">
+              Semua item harus memiliki lokasi terlebih dahulu.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Not Found Message -->
+  <div *ngIf="!receiveOrder && !isLoading" class="alert alert-warning">
+    <h5>Receive Order tidak ditemukan</h5>
+    <p>Receive Order dengan ID {{ receiveId }} tidak ditemukan dalam sistem.</p>
+  </div>
+</div>
+
+

@@ -1,29 +1,114 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Daftar Penjualan</h4>
-    <button class="btn btn-primary" (click)="goToAdd()">+ Tambah Penjualan</button>
+    <h4>Daftar Sales Order</h4>
+    <button class="btn btn-primary" (click)="goToAdd()">+ Tambah Sales Order</button>
   </div>
 
-  <table class="table table-striped">
-    <thead class="table-light">
-      <tr>
-        <th>Kode</th>
-        <th>Customer</th>
-        <th>Tanggal</th>
-        <th>Total</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let sale of sales">
-        <td>{{ sale.code }}</td>
-        <td>{{ sale.customer }}</td>
-        <td>{{ sale.date }}</td>
-        <td>Rp {{ sale.total | number:'1.0-0' }}</td>
-        <td>
-          <button class="btn btn-sm btn-outline-info" (click)="goToDetail(sale.id)">Detail</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Filter Section -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="onFilter()">
+        <div class="row">
+          <!-- <div class="col-md-6">
+            <label for="customerName" class="form-label">Customer Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="customerName" 
+              formControlName="customerName"
+              placeholder="Masukkan nama customer..."
+            />
+          </div> -->
+          <div class="col-md-6">
+              <label for="customerId" class="form-label">Customer <span class="text-danger">*</span></label>
+              <select 
+                class="form-control" 
+                id="customerId" 
+                formControlName="customerId"
+                [class.is-invalid]="form.get('customerId')?.invalid && form.get('customerId')?.touched"
+              >
+                <option value="">Pilih Customer</option>
+                <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="form.get('customerId')?.invalid && form.get('customerId')?.touched">
+                Customer harus dipilih
+              </div>
+          </div>
+          <div class="col-md-6 d-flex align-items-end">
+            <button type="submit" class="btn btn-success me-2">Filter</button>
+            <button type="button" class="btn btn-secondary" (click)="resetFilter()">Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Sales Orders Table -->
+  <div *ngIf="!isLoading" class="card">
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>Id</th>
+            <th>Tanggal Penjualan</th>
+            <th>Pelanggan</th>
+            <th>Jumlah Barang</th>
+            <th>Jumlah Belanja</th>
+            <th>Tipe Pembayaran</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let salesOrder of salesOrders">
+            <td>{{ salesOrder.id || 'N/A' }}</td>
+            <td>{{ salesOrder.orderDate | date:'dd/MM/yyyy' }}</td>
+            <td>{{ salesOrder.customer?.name }}</td>
+            <td>{{salesOrder.items?.length}}</td>
+            <td>Rp {{ salesOrder.totalAmount | number:'1.0-0' }}</td>
+            <td>{{ salesOrder.customer?.termOfPayment}}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-info me-1" (click)="goToDetail(salesOrder.id!)">Detail</button>
+            </td>
+          </tr>
+          <tr *ngIf="salesOrders.length === 0">
+            <td colspan="6" class="text-center text-muted">Tidak ada data sales order</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div *ngIf="totalData > totalRecord" class="d-flex justify-content-center mt-3">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="currPage === 1">
+              <button class="page-link" (click)="onPageChange(currPage - 1)" [disabled]="currPage === 1">
+                Previous
+              </button>
+            </li>
+            <li class="page-item" 
+                *ngFor="let page of [].constructor(Math.ceil(totalData / totalRecord)); let i = index"
+                [class.active]="currPage === i + 1">
+              <button class="page-link" (click)="onPageChange(i + 1)">
+                {{ i + 1 }}
+              </button>
+            </li>
+            <li class="page-item" [class.disabled]="currPage === Math.ceil(totalData / totalRecord)">
+              <button class="page-link" 
+                      (click)="onPageChange(currPage + 1)" 
+                      [disabled]="currPage === Math.ceil(totalData / totalRecord)">
+                Next
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
 </div>

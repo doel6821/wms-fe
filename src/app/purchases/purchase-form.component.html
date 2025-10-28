@@ -1,68 +1,128 @@
 <div class="container mt-4">
-  <h4>Form Tambah Pembelian</h4>
+  <h4>{{ isEditMode ? 'Edit Purchase Order' : 'Tambah Purchase Order' }}</h4>
 
-  <form (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <label>Tanggal</label>
-      <input type="date" class="form-control" [(ngModel)]="purchase.date" name="date" required />
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Informasi Supplier</h5>
+        
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Supplier *</label>
+            <select class="form-select" formControlName="supplierId" (change)="onSupplierChange(+$any($event.target).value)">
+              <option value="">Pilih Supplier</option>
+              <option *ngFor="let s of suppliers" [value]="s.id">{{ s.name }}</option>
+            </select>
+            <div *ngIf="form.get('supplierId')?.invalid && form.get('supplierId')?.touched" class="text-danger">
+              Supplier wajib dipilih
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label">Discount</label>
+            <input type="number" class="form-control" formControlName="discount" min="0" (input)="calculateTotals()">
+            <div *ngIf="form.get('discount')?.invalid && form.get('discount')?.touched" class="text-danger">
+              Discount tidak boleh negatif
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="mb-3">
-      <label>Supplier</label>
-      <select class="form-select" [(ngModel)]="purchase.supplier" name="supplier" required>
-        <option value="">Pilih Supplier</option>
-        <option *ngFor="let s of suppliers" [value]="s">{{ s }}</option>
-      </select>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="card-title mb-0">Items Purchase Order</h5>
+          <button type="button" class="btn btn-success" (click)="addOrderItem()">+ Tambah Item</button>
+        </div>
+
+        <div formArrayName="orderItems">
+          <div *ngFor="let item of orderItems.controls; let i = index" class="border rounded p-3 mb-3" [formGroupName]="i">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label">Produk *</label>
+                <select class="form-select" formControlName="productId" (change)="onProductChange(i, +$any($event.target).value)">
+                  <option value="">Pilih Produk</option>
+                  <option *ngFor="let p of products" [value]="p.id">{{ p.name }}</option>
+                </select>
+                <div *ngIf="item.get('productId')?.invalid && item.get('productId')?.touched" class="text-danger">
+                  Produk wajib dipilih
+                </div>
+              </div>
+              
+              <div class="col-md-2">
+                <label class="form-label">Quantity *</label>
+                <input type="number" class="form-control" formControlName="orderQty" min="1" (input)="calculateItemTotal(i)">
+                <div *ngIf="item.get('orderQty')?.invalid && item.get('orderQty')?.touched" class="text-danger">
+                  Quantity minimal 1
+                </div>
+              </div>
+              
+              <div class="col-md-2">
+                <label class="form-label">Harga *</label>
+                <input type="number" class="form-control" formControlName="price" min="0" (input)="calculateItemTotal(i)">
+                <div *ngIf="item.get('price')?.invalid && item.get('price')?.touched" class="text-danger">
+                  Harga wajib diisi
+                </div>
+              </div>
+              
+              <div class="col-md-2">
+                <label class="form-label">Total</label>
+                <input type="number" class="form-control" formControlName="totalAmount" readonly>
+              </div>
+              
+              <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <div>
+                  <button type="button" class="btn btn-danger w-100" (click)="removeOrderItem(i)">Hapus</button>
+                </div>
+              </div>
+              
+              <div class="col-md-1">
+                <input type="hidden" formControlName="productName">
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="orderItems.length === 0" class="text-center p-3 border rounded">
+            <p class="text-muted mb-0">Belum ada item. Klik "Tambah Item" untuk menambahkan produk.</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <hr />
-    <h5>Tambah Produk</h5>
-    <div class="row g-2 mb-3">
-      <div class="col-md-4">
-        <select class="form-select" [(ngModel)]="newItem.productCode" name="productCode">
-          <option value="">Pilih Produk</option>
-          <option *ngFor="let p of products" [value]="p.code">{{ p.code }} - {{ p.name }}</option>
-        </select>
-      </div>
-      <div class="col-md-2">
-        <input type="number" class="form-control" placeholder="Qty" [(ngModel)]="newItem.qty" name="qty" min="1" />
-      </div>
-      <div class="col-md-3">
-        <input type="number" class="form-control" placeholder="Harga" [(ngModel)]="newItem.price" name="price" />
-      </div>
-      <div class="col-md-2">
-        <button type="button" class="btn btn-success w-100" (click)="addItem()">Tambah</button>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Summary</h5>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Subtotal</label>
+            <input type="number" class="form-control" formControlName="amount" readonly>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Discount</label>
+            <input type="number" class="form-control" formControlName="discount" readonly>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label"><strong>Total Amount</strong></label>
+            <input type="number" class="form-control fw-bold" formControlName="totalAmount" readonly>
+          </div>
+        </div>
       </div>
     </div>
 
-    <table class="table table-bordered">
-      <thead class="table-light">
-        <tr>
-          <th>Kode</th>
-          <th>Nama</th>
-          <th>Qty</th>
-          <th>Harga</th>
-          <th>Total</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of purchase.items; let i = index">
-          <td>{{ item.code }}</td>
-          <td>{{ item.name }}</td>
-          <td>{{ item.qty }}</td>
-          <td>Rp {{ item.price | number }}</td>
-          <td>Rp {{ item.total | number }}</td>
-          <td>
-            <button class="btn btn-sm btn-danger" (click)="removeItem(i)">Hapus</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h5>Total: Rp {{ totalAmount | number }}</h5>
-
-    <button type="submit" class="btn btn-primary me-2">Simpan</button>
-    <button class="btn btn-secondary" type="button" (click)="back()">Batal</button>
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || orderItems.length === 0">
+        {{ isEditMode ? 'Update' : 'Simpan' }}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+    </div>
   </form>
 </div>

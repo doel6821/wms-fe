@@ -1,8 +1,11 @@
 <nav class="bg-dark text-white p-3" style="width: 250px; height: 100vh;">
-  <h5 class="mb-4">WMS Menu</h5>
-  <ul class="nav flex-column">
+  <h5 class="mb-4">SISTEM PENGELOLAAN GUDANG</h5>
+  <!-- <ul class="nav flex-column">
     <li class="nav-item">
       <a class="nav-link text-white" routerLink="/dashboard">Dashboard</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-white" routerLink="/users">Pengelolaan Pengguna</a>
     </li>
     <li class="nav-item">
       <a class="nav-link text-white" routerLink="/products">Produk</a>
@@ -23,7 +26,17 @@
       <a class="nav-link text-white" routerLink="/purchases">Pembelian</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-white" routerLink="/reports">Laporan</a>
+      <a class="nav-link text-white" routerLink="/packing">Packing</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-white" routerLink="/receive">Penerimaan Barang</a>
+    </li>
+    
+  </ul> -->
+
+  <ul class="nav flex-column">
+    <li *ngFor="let item of filteredMenu" class="nav-item">
+      <a class="nav-link text-white" [routerLink]="item.link">{{ item.label }}</a>
     </li>
   </ul>
 </nav>

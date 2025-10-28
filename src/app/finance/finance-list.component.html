@@ -1,0 +1,90 @@
+<!-- <div class="container mt-3">
+  <h4>Modul Finance</h4>
+
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'invoices'" (click)="setTab('invoices')">
+        Tagihan Jatuh Tempo
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'payments'" (click)="setTab('payments')">
+        Pembayaran Jatuh Tempo Hari Ini
+      </a>
+    </li>
+  </ul>
+
+  <div *ngIf="activeTab === 'invoices'" class="mt-3">
+    <h6>Tagihan Belum Lunas</h6>
+    <table class="table table-bordered table-sm">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Jatuh Tempo</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let inv of invoices">
+          <td>{{ inv.id }}</td>
+          <td>{{ inv.customer.name }}</td>
+          <td>{{ inv.dueDate | date:'dd/MM/yyyy' }}</td>
+          <td>Rp {{ inv.total | number:'1.0-0' }}</td>
+          <td>
+            <span class="badge" 
+              [ngClass]="{
+                'bg-danger': inv.status === 'Overdue',
+                'bg-warning': inv.status === 'Pending',
+                'bg-success': inv.status === 'Paid'
+              }">
+              {{ inv.status }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary" (click)="updateStatus(inv, 'Paid')">Tandai Dibayar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="activeTab === 'payments'" class="mt-3">
+    <h6>Pembayaran Jatuh Tempo Hari Ini</h6>
+    <table class="table table-bordered table-sm">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Supplier</th>
+          <th>Jatuh Tempo</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pay of payments">
+          <td>{{ pay.id }}</td>
+          <td>{{ pay.supplier.name }}</td>
+          <td>{{ pay.dueDate | date:'dd/MM/yyyy' }}</td>
+          <td>Rp {{ pay.total | number:'1.0-0' }}</td>
+          <td>
+            <span class="badge" 
+              [ngClass]="{
+                'bg-danger': pay.status === 'Overdue',
+                'bg-warning': pay.status === 'Pending',
+                'bg-success': pay.status === 'Paid'
+              }">
+              {{ pay.status }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-outline-success" (click)="updateStatus(pay, 'Paid')">Tandai Lunas</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> -->

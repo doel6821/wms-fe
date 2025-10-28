@@ -1,44 +1,230 @@
 <div class="container mt-4">
-  <h4>{{ isEdit ? 'Edit Produk' : 'Tambah Produk' }}</h4>
-
-  <form (ngSubmit)="onSave()" #formRef="ngForm">
-    <div class="mb-3">
-      <label class="form-label">Kode Produk</label>
-      <input
-        type="text"
-        class="form-control"
-        [(ngModel)]="form.code"
-        name="code"
-        [readonly]="isEdit"
-        required
-      />
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Nama Produk</label>
-      <input
-        type="text"
-        class="form-control"
-        [(ngModel)]="form.name"
-        name="name"
-        required
-      />
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Rata-rata Harga (Average Cost)</label>
-      <input
-        type="number"
-        class="form-control"
-        [(ngModel)]="form.averageCost"
-        name="averageCost"
-        required
-      />
-    </div>
-
-    <button type="submit" class="btn btn-success me-2">
-      {{ isEdit ? 'Simpan Perubahan' : 'Tambah Produk' }}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>{{ isEditMode ? 'Edit Produk' : 'Tambah Produk' }}</h4>
+    <button type="button" class="btn btn-outline-secondary" (click)="back()">
+      <i class="fas fa-arrow-left"></i> Kembali
     </button>
-    <button type="button" class="btn btn-secondary" (click)="back()">Batal</button>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="text-center my-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">{{ isEditMode ? 'Memuat data produk...' : 'Menyimpan produk...' }}</p>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading" class="row">
+    <div class="col-md-6">
+      <!-- Basic Information -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="fas fa-info-circle"></i> Informasi Dasar</h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Kode Produk <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="code"
+              [class.is-invalid]="form.get('code')?.touched && form.get('code')?.errors"
+              [readonly]="isEditMode"
+              placeholder="Masukkan kode produk"
+            />
+            <div class="invalid-feedback">
+              Kode produk harus diisi
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Nama Produk <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name"
+              [class.is-invalid]="form.get('name')?.touched && form.get('name')?.errors"
+              placeholder="Masukkan nama produk"
+            />
+            <div class="invalid-feedback">
+              Nama produk harus diisi
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Nama Supplier <span class="text-danger">*</span></label>
+            <select class="form-select" formControlName="supplierId" (change)="onSupplierChange(+$any($event.target).value)">
+              <option value="">Pilih Supplier</option>
+              <option *ngFor="let s of suppliers" [value]="s.id">{{ s.name }}</option>
+            </select>
+            <div *ngIf="form.get('supplierId')?.invalid && form.get('supplierId')?.touched" class="text-danger">
+              Supplier wajib dipilih
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Lead Time (Hari)</label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="leadTimeDays"
+              placeholder="Masukkan lead time dalam hari"
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <!-- Pricing Information -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="fas fa-money-bill"></i> Informasi Harga</h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Harga Jual (HET Price)</label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="hetPrice"
+              placeholder="Masukkan harga jual"
+              min="0"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Harga Beli (Cost Price)</label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="costPrice"
+              placeholder="Masukkan harga beli"
+              min="0"
+            />
+          </div>
+
+          <!-- <div class="mb-3">
+            <label class="form-label">Harga Rata-rata (Average Price)</label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="avgPrice"
+              placeholder="Masukkan harga rata-rata"
+              min="0"
+            />
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Stock Information -->
+    <!-- <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="fas fa-boxes"></i> Informasi Stock</h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label class="form-label">Stock On Hand</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="stockOnHand"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label class="form-label">Stock Allocation</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="stockAllocation"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label class="form-label">Stock Back Order</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="stockBackOrder"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label class="form-label">Stock Packing</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="stockPacking"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Stock On Purchase</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="stockOnPurchase"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Stock On Receive</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="stockOnReceive"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Form Actions -->
+    <div class="col-12">
+      <div class="d-flex gap-2">
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="form.invalid || isLoading"
+        >
+          <i class="fas fa-save"></i> 
+          {{ isEditMode ? 'Update Produk' : 'Simpan Produk' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="back()">
+          <i class="fas fa-times"></i> Batal
+        </button>
+      </div>
+    </div>
   </form>
 </div>
