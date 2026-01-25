@@ -45,7 +45,7 @@ export class ProductFormComponent implements OnInit {
       stockPacking: [0, [Validators.min(0)]],
       stockOnPurchase: [0, [Validators.min(0)]],
       stockOnReceive: [0, [Validators.min(0)]],
-      leadTimeDays: [0, [Validators.min(0)]]
+      // leadTimeDays: [0, [Validators.min(0)]]
     });
   }
 
@@ -133,7 +133,7 @@ export class ProductFormComponent implements OnInit {
       this.request.stockPacking = this.form.value.stockPacking;
       this.request.stockOnPurchase = this.form.value.stockOnPurchase;
       this.request.stockOnReceive = this.form.value.stockOnReceive;
-      this.request.leadTimeDays = this.form.value.leadTimeDays;
+      // this.request.leadTimeDays = this.form.value.leadTimeDays;
       this.request.supplierId = this.form.value.supplierId;
       
       if (this.isEditMode) {
@@ -142,13 +142,19 @@ export class ProductFormComponent implements OnInit {
           this.request).subscribe({
           next: (res: any) => {
             console.log(res)
-            if (res.meta.code == '2000100') {
+            if (res.meta.code == "2000100") {
               Swal.fire({
                 icon: 'success',
                 title: 'Berhasil',
                 text: 'Produk berhasil diupdate'
               }).then(() => {
                 this.router.navigate(['/products']);
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res.meta.message
               });
             }
           },
@@ -166,13 +172,21 @@ export class ProductFormComponent implements OnInit {
         this.request.id = 0
         this.productService.registerProduct(this.request).subscribe({
           next: (res: any) => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Berhasil',
-              text: 'Produk berhasil ditambahkan'
-            }).then(() => {
-              this.router.navigate(['/products']);
-            });
+            if (res.meta.code == "2000100") {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Produk berhasil diupdate'
+              }).then(() => {
+                this.router.navigate(['/products']);
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res.meta.message
+              });
+            }
           },
           error: (err) => {
             console.error('Error saving product:', err);

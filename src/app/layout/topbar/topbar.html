@@ -1,8 +1,31 @@
 <nav class="navbar navbar-expand navbar-light bg-light shadow-sm px-4">
-  <!-- <span class="navbar-brand mb-0 h2">SISTEM PENGELOLAAN GUDANG</span> -->
-  <ul class="navbar-nav ms-auto">
-    <li class="nav-item">
-      <span class="nav-link">Hi, User <a href="#" (click)="logout(); $event.preventDefault()"> Logout!</a></span>
+  <span class="navbar-brand mb-0 h2">SISTEM PENGELOLAAN GUDANG</span>
+  
+  <ul class="navbar-nav ms-auto align-items-center">
+    <li class="nav-item dropdown">
+      <a 
+        class="nav-link dropdown-toggle d-flex align-items-center" 
+        href="#" 
+        id="userDropdown" 
+        role="button" 
+        data-bs-toggle="dropdown" 
+        aria-expanded="false"
+      >
+        Hello {{ currentUser?.name || 'User' }}
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+        <li>
+          <a class="dropdown-item" href="#" (click)="goToChangePassword(); $event.preventDefault()">
+            <i class="bi bi-key me-2"></i> Ubah Password
+          </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item text-danger" href="#" (click)="logout(); $event.preventDefault()">
+            <i class="bi bi-box-arrow-right me-2"></i> Logout
+          </a>
+        </li>
+      </ul>
     </li>
   </ul>
 </nav>

@@ -16,7 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (
   
   let token: string | null = null;
   if (isPlatformBrowser(platformId)) {
-    token = localStorage.getItem('token');
+    token = window.localStorage.getItem('token');
   }
   
   const cloned = token

@@ -74,14 +74,22 @@ export class LocationFormComponent implements OnInit {
       if (this.isEditMode) {
         // Update location
         this.locationService.updateLocation(+this.locationId!, formData).subscribe({
-          next: (res) => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Berhasil',
-              text: 'Lokasi berhasil diupdate'
-            }).then(() => {
-              this.router.navigate(['/locations']);
-            });
+          next: (res: any) => {
+            if (res.meta.code == "2000100") {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data lokasi berhasil diupdate'
+              }).then(() => {
+                this.router.navigate(['/locations']);
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res.meta.message
+              });
+            }
           },
           error: (err) => {
             console.error('Error updating location:', err);
@@ -95,14 +103,22 @@ export class LocationFormComponent implements OnInit {
       } else {
         // Create new location
         this.locationService.registerLocation(formData).subscribe({
-          next: (res) => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Berhasil',
-              text: 'Lokasi berhasil ditambahkan'
-            }).then(() => {
-              this.router.navigate(['/locations']);
-            });
+          next: (res: any) => {
+            if (res.meta.code == "2000100") {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data lokasi berhasil disimpan'
+              }).then(() => {
+                this.router.navigate(['/locations']);
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res.meta.message
+              });
+            }
           },
           error: (err) => {
             console.error('Error saving location:', err);

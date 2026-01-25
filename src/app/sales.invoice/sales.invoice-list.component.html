@@ -1,0 +1,124 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Daftar Invoice Penjualan</h4>
+    <!-- <button class="btn btn-primary" (click)="goToAdd()">+ Tambah Receive Order</button> -->
+  </div>
+
+  <!-- Filter Section -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <form [formGroup]="form" class="row g-3">
+        <div class="row">
+        <div class="col-md-3">
+          <label for="customerId" class="form-label">Pelanggan <span class="text-danger">*</span></label>
+          <select 
+            class="form-control" 
+            id="customerId" 
+            formControlName="customerId"
+            [class.is-invalid]="form.get('customerId')?.invalid && form.get('customerId')?.touched"
+          >
+            <option value="">Pilih Pelanggan</option>
+            <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
+          </select>
+              <!-- <div class="invalid-feedback" *ngIf="form.get('customerId')?.invalid && form.get('customerId')?.touched">
+                Customer harus dipilih
+              </div> -->
+        </div>
+        <div class="col-md-3">
+          <label for="dueDate" class="form-label">Tanggal Jatuh Tempo</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            formControlName="dueDate"
+            [class.is-invalid]="form.get('dueDate')?.invalid && form.get('dueDate')?.touched"
+          >
+        </div>
+        <div class="col-md-3">
+          <label for="paymentStatus" class="form-label">Status Pembayaran <span class="text-danger">*</span></label>
+          <select class="form-select" formControlName="paymentStatus">
+            <option value="Lunas">Lunas</option>
+            <option value="Belum Lunas">Belum Lunas</option>
+          </select>
+        </div>
+        </div>
+        <div class="col-md-8 d-flex align-items-end">
+          <button type="button" class="btn btn-primary me-2" (click)="onFilter()">Filter</button>
+          <button type="button" class="btn btn-secondary" (click)="resetFilter()">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <!-- <th>ID</th> -->
+              <th>Tanggal</th>
+              <th>Customer Name</th>
+              <th>Nomor Invoice</th>
+              <th>Total Item</th>
+              <th>Status</th>
+              <th>Jatuh Tempo</th>
+              <th>Status Pembayaran</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of salesInvoices" [ngClass]="{ 'table-secondary': isLoading }">
+              <!-- <td>{{ s.id }}</td> -->
+              <td>{{ s.invoiceDate | date:'dd/MM/yyyy' }}</td>
+              <td>{{ s.customer?.name }}</td>
+              <td>{{ s.invoiceNumber }}</td>
+              <td>{{ s.invoiceItems?.length | number }}</td>
+              <td>{{ s.status }}</td>
+              <td>{{ s.dueDate | date:'dd/MM/yyyy'}}</td>
+              <td>{{ s.paymentStatus }}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group">
+                  <button class="btn btn-info" (click)="goToDetail(s.id)">Detail</button>
+                  <button 
+                    class="btn btn-success btn-sm"
+                    (click)="goToPayment(s.id)"
+                    *ngIf="s.paymentStatus === 'Belum Lunas'">
+                    Terima Pembayaran
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="salesInvoices.length === 0 && !isLoading">
+              <td colspan="8" class="text-center">Tidak ada data receive order</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <nav *ngIf="totalData > totalRecord" aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="currPage === 1">
+            <button class="page-link" (click)="onPageChange(currPage - 1)" [disabled]="currPage === 1">Previous</button>
+          </li>
+          <li *ngFor="let page of [].constructor(Math.ceil(totalData / totalRecord)); let i = index" 
+              class="page-item" [class.active]="currPage === i + 1">
+            <button class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="currPage === Math.ceil(totalData / totalRecord)">
+            <button class="page-link" (click)="onPageChange(currPage + 1)" 
+                    [disabled]="currPage === Math.ceil(totalData / totalRecord)">Next</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

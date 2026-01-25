@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Daftar Purchase Order</h4>
-    <button class="btn btn-primary" (click)="goToAdd()">+ Tambah Purchase Order</button>
+    <h4>Daftar Pembelian</h4>
+    <button class="btn btn-primary" (click)="goToAdd()">+ Tambah Pembelian</button>
   </div>
 
   <!-- Filter Section -->
@@ -34,7 +34,7 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>ID</th>
+              <!-- <th>ID</th> -->
               <th>Tanggal Pembelian</th>
               <th>Supplier</th>
               <th>Jumlah Barang</th>
@@ -44,7 +44,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let p of purchases" [ngClass]="{ 'table-secondary': isLoading }">
-              <td>{{ p.id }}</td>
+              <!-- <td>{{ p.id }}</td> -->
               <td>{{ p.orderDate |  date:'dd/MM/yyyy' }}</td>
               <td>{{ p.supplier.name }}</td>
               <td>{{ p.items.length | number }}</td>

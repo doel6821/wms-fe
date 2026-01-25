@@ -183,6 +183,15 @@ export class ReceiveFormComponent implements OnInit {
         });
       return
     }
+    if (itemReceive.purchasePrice == 0) {
+      event.target.checked = false;
+      Swal.fire({
+          icon: 'warning',
+          title: 'Harga kosong',
+          text: `Harga pembelian tidak boleh 0`
+        });
+      return
+    }
     if (checked) {
       // Jika dicentang, tambahkan ke daftar selectedItems
       this.receiveOrderItems.push(itemReceive);

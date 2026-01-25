@@ -34,6 +34,7 @@ export class SupplierFormComponent implements OnInit {
       discountPercent: [0, [Validators.min(0), Validators.max(100)]],
       termOfPayment: ['', Validators.required],
       cancelOnBackOrder: [false],
+      leadTimeDays: [0, [Validators.min(0)]]
     });
   }
 
@@ -59,7 +60,8 @@ export class SupplierFormComponent implements OnInit {
           address: supplier.address,
           discountPercent: supplier.discountPercent,
           termOfPayment: supplier.termOfPayment,
-          cancelOnBackOrder: supplier.cancelOnBackOrder,
+          // cancelOnBackOrder: supplier.cancelOnBackOrder,
+          leadTimeDays: supplier.leadTimeDays
         });
         this.isLoading = false;
       },
@@ -84,14 +86,22 @@ export class SupplierFormComponent implements OnInit {
         this.supplierService
           .registerSupplier(formData)
           .subscribe({
-            next: (res) => {
-              Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: 'Supplier berhasil diupdate',
-              }).then(() => {
-                this.router.navigate(['/suppliers']);
-              });
+            next: (res: any) => {
+              if (res.meta.code == "2000100") {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Berhasil',
+                  text: 'Data supplier berhasil diupdate'
+                }).then(() => {
+                  this.router.navigate(['/suppliers']);
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: res.meta.message
+                });
+              }
             },
             error: (err) => {
               console.error('Error updating supplier:', err);
@@ -105,14 +115,22 @@ export class SupplierFormComponent implements OnInit {
       } else {
         // Create new supplier
         this.supplierService.registerSupplier(formData).subscribe({
-          next: (res) => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Berhasil',
-              text: 'Supplier berhasil ditambahkan',
-            }).then(() => {
-              this.router.navigate(['/suppliers']);
-            });
+          next: (res: any) => {
+            if (res.meta.code == "2000100") {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Berhasil',
+                  text: 'Data supplier berhasil disimpan'
+                }).then(() => {
+                  this.router.navigate(['/suppliers']);
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: res.meta.message
+                });
+              }
           },
           error: (err) => {
             console.error('Error saving supplier:', err);

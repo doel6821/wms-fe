@@ -16,7 +16,7 @@ export class RequestProduct {
         public stockPacking?: number,
         public stockOnPurchase?: number,
         public stockOnReceive?: number,
-        public leadTimeDays?: number,
+        // public leadTimeDays?: number,
     ){}
 }
 

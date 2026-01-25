@@ -1,0 +1,81 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Rincian Penjualan Barang</h4>
+    <div class="btn-group">
+      <button class="btn btn-secondary" (click)="back()">Kembali</button>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Sales Invoice Details -->
+  <div *ngIf="salesInvoice && !isLoading">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Informasi Sales Invoice</h5>
+        
+        <div class="col-md-6">
+          <strong>ID: </strong> {{ salesInvoice.id }}
+        </div>
+        <div class="col-md-6">
+          <strong>Customer: </strong> {{ salesInvoice.customer?.name }}
+        </div>
+        <div class="col-md-6">
+          <strong>Tanggal Penjualan barang: </strong> {{ salesInvoice.invoiceDate | date:'dd/MM/yyyy'}}
+        </div>
+        <div class="col-md-6">
+          <strong>Total Item: </strong>{{ salesInvoice.invoiceItems?.length | number }}
+        </div>
+        <div class="col-md-6">
+          <strong>Status Pembayaran: </strong>{{ salesInvoice.paymentStatus }}
+        </div>
+      
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Items Penjualan Barang</h5>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Sales Order Id</th>
+                <th>Produk Name</th>
+                <th>Jumlah Penjualan</th>
+                <th>Harga</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of salesInvoice.invoiceItems ; let i = index">
+                <td>{{ item.salesOrderId }}</td>
+                <td>{{ item.productName }}</td>
+                <td>{{ item.quantity | number }}</td>
+                <td>{{ item.price | number }}</td>
+                <td>{{ item.total | number }}</td>
+                
+              </tr>
+              <tr *ngIf="!salesInvoice.invoiceItems || salesInvoice.invoiceItems.length === 0">
+                <td colspan="4" class="text-center">Tidak ada item</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Not Found Message -->
+  <div *ngIf="!salesInvoice && !isLoading" class="alert alert-warning">
+    <h5>Receive Order tidak ditemukan</h5>
+    <p>Receive Order dengan ID {{ invoiceId}} tidak ditemukan dalam sistem.</p>
+  </div>
+</div>
+
+

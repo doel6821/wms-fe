@@ -41,7 +41,7 @@
         </li> -->
         <li class="nav-item">
           <a class="nav-link" [class.active]="activeTab === 'demand'" (click)="activeTab = 'demand'">
-            <i class="fas fa-chart-line"></i> History Demand
+            <i class="fas fa-chart-line"></i> Riwayat Permintaan
           </a>
         </li>
       </ul>
@@ -76,10 +76,10 @@
                     <td><strong>Supplier:</strong></td>
                     <td>{{ product.supplier?.name }}</td>
                   </tr>
-                  <tr>
+                  <!-- <tr>
                     <td><strong>Lead Time:</strong></td>
                     <td>{{ product.leadTimeDays || 0 }} hari</td>
-                  </tr>
+                  </tr> -->
                 </table>
               </div>
             </div>
@@ -192,7 +192,7 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">History Demand (13 Bulan Terakhir)</h6>
+                <h6 class="mb-0">History Permintaan (13 Bulan Terakhir)</h6>
                 <span class="badge bg-info">Periode: {{ product.demands?.month }}</span>
               </div>
               <div class="card-body">

@@ -18,13 +18,18 @@ export class Login {
   
   form: FormGroup;
   request: LoginRequest = {} as LoginRequest;
-  
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
-    this.form = this.fb.group({
-      tenant: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-    });
+  mode: 'login' | 'forgot' = 'login';
+  isSubmitting = false;
+
+  constructor(
+    private fb: FormBuilder, 
+    private auth: AuthService, 
+    private router: Router) {
+      this.form = this.fb.group({
+        tenant: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', Validators.required],
+      });
   }
   
 
@@ -41,8 +46,8 @@ export class Login {
       next: (res: any) => {
         console.log(res)
         if (res.meta.code == '2000100') {
-          localStorage.setItem('token', res.data.token);
-          localStorage.setItem('role', res.data.role); 
+          window.localStorage.setItem('token', res.data.token);
+          window.localStorage.setItem('role', res.data.role); 
           this.router.navigate(['/dashboard']);
         } else {
             Swal.fire({
@@ -62,6 +67,33 @@ export class Login {
         });
       }
     });
+  }
+
+  onForgotPassword() {
+    if (this.mode !== 'forgot' || !this.form.value.email) return;
+    this.isSubmitting = true;
+    this.request.email = this.form.value.email
+    this.auth.forgotPassword(this.request).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        Swal.fire({
+              icon: 'success',
+              title: 'Berhasil',
+              text: 'Permintaan Reset Password Berhasil, silahkan cek email anda!'
+            }).then(() => {
+              this.mode = 'login';
+            });
+        // this.mode = 'login'; // kembali ke form login
+      },
+      error: () => (this.isSubmitting = false),
+    });
+  }
+
+  switchMode(mode: 'login' | 'forgot') {
+    this.mode = mode;
+    if (mode === 'forgot') this.form.get('password')?.clearValidators();
+    else this.form.get('password')?.setValidators([Validators.required]);
+    this.form.get('password')?.updateValueAndValidity();
   }
 
   goToRegister() {

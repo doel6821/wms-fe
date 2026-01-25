@@ -1,20 +1,43 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Manajemen User</h4>
+    <h4>Pengelolaan Pengguna</h4>
     <button class="btn btn-primary" (click)="openAddModal()">
-      <i class="fas fa-plus"></i> Tambah User
+      <i class="fas fa-plus"></i> Tambah Pengguna
     </button>
   </div>
 
-  <div class="mb-3">
-    <input type="text" class="form-control" placeholder="Cari berdasarkan email..." [(ngModel)]="filterEmail" (ngModelChange)="loadUsers()" />
+  <div class="card mb-3">
+    <div class="card-body">
+      <form [formGroup]="form" class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Email Pengguna:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="email"
+            placeholder="Masukkan email pengguna..."
+          />
+        </div>
+      
+        <div class="col-md-4 d-flex align-items-end">
+          <div class="btn-group w-100">
+            <button type="button" class="btn btn-primary" (click)="loadUsers()">
+              <i class="fas fa-search"></i> Filter
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="resetFilter()">
+              <i class="fas fa-refresh"></i> Reset
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 
   <div class="table-responsive" *ngIf="!isLoading; else loading">
     <table class="table table-striped">
       <thead class="table-light">
         <tr>
-          <th>ID</th>
+          <!-- <th>ID</th> -->
           <th>Email</th>
           <th>Role</th>
           <th>Aksi</th>
@@ -22,7 +45,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let user of users">
-          <td>{{ user.id }}</td>
+          <!-- <td>{{ user.id }}</td> -->
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
           <td>
@@ -51,23 +74,23 @@
     <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title">{{ modalMode === 'add' ? 'Tambah User' : 'Edit Role User' }}</h5>
+              <h5 class="modal-title">{{ modalMode === 'add' ? 'Tambah Pengguna' : 'Edit Role Pengguna' }}</h5>
               <button type="button" class="btn-close" (click)="closeModal()"></button>
           </div>
           <div class="modal-body">
               <form [formGroup]="form">
                   <div class="mb-3">
-                      <label class="form-label">Email</label>
+                      <label class="form-label">Email *</label>
                       <input type="email" class="form-control" formControlName="email" [readonly]="modalMode === 'edit'">
                   </div>
 
                   <div class="mb-3" *ngIf="modalMode === 'add'">
-                      <label class="form-label">Password</label>
+                      <label class="form-label">Password *</label>
                       <input type="password" class="form-control" formControlName="password">
                   </div>
 
                   <div class="mb-3">
-                      <label class="form-label">Role</label>
+                      <label class="form-label">Role *</label>
                       <select class="form-select" formControlName="role">
                         <option value="">Pilih Role</option>
                         <option value="admin">Admin</option>
@@ -80,7 +103,7 @@
           </div>
           <div class="modal-footer">
               <button class="btn btn-secondary" (click)="closeModal()">Batal</button>
-              <button class="btn btn-primary" (click)="saveUser()">Simpan</button>
+              <button class="btn btn-primary" [disabled]="form.invalid" (click)="saveUser()">Simpan</button>
           </div>
         </div>
        </div>

@@ -14,10 +14,10 @@ export class Customer {
 }
 
 export interface CustomerQueryParams {
-  name?: string;
-  page?: number;
-  limit?: number;
-  customerId?: number;
+    customerId?: number;
+    page?: number;
+    limit?: number;
+    name?: string;
 }
 
 export class CustomerListResponse {

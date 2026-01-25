@@ -61,6 +61,7 @@
                 <th>Id</th>
                 <th>Purchse Order Id</th>
                 <th>Nama Barang</th>
+                <th>Harga</th>
                 <th>Jumlah Order</th>
                 <th>Proses Diterima</th>
                 <th>Proses Stok </th>
@@ -74,6 +75,7 @@
                 <td>{{ s.id }}</td>
                 <td>{{ s.purchaseOrderId }}</td>
                 <td>{{ s.product?.name }}</td>
+                <td>{{ s.product?.hetPrice }}</td>
                 <td>{{ s.orderQty | number }}</td>
                 <td>{{ s.receiveOrderQty | number }}</td>
                 <td>{{ s.stockedOrderQty | number }}</td>

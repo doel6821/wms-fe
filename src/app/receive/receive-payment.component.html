@@ -1,0 +1,57 @@
+<div class="container mt-4">
+  <h4>Penerimaan Pembayaran</h4>
+  <div class="card mt-3">
+    <div class="card-body">
+      <h5>Informasi Invoice</h5>
+      <p><strong>Nomor Invoice:</strong> {{ receiveOrder.invoiceNumber }}</p>
+      <p><strong>Supplier:</strong> {{ receiveOrder.supplier?.name }}</p>
+      <p><strong>Total Tagihan:</strong> Rp {{ receiveOrder.totalAmount | number }}</p>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-body">
+      <h5>Form Pembayaran</h5>
+      <form [formGroup]="form" (ngSubmit)="submitPayment()">
+        <div class="mb-3">
+          <label>Tanggal Pembayaran</label>
+          <input type="date" class="form-control" formControlName="paymentDate" />
+        </div>
+        <div class="mb-3">
+          <label>Metode Pembayaran</label>
+          <select class="form-select" formControlName="paymentMethod">
+            <option value="cash">Tunai</option>
+            <option value="transfer">Transfer Bank</option>
+            <option value="giro">Giro</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Nomor Referensi</label>
+          <input type="text" class="form-control" formControlName="referenceNumber" />
+        </div>
+        <div class="mb-3">
+          <label>Jumlah Pembayaran</label>
+          <input 
+            type="number"
+            class="form-control form-control-sm"
+            min="0"
+            [max]="(receiveOrder.totalAmount)"
+            (change)="onReceivePaymentChange($any($event.target).value)"
+            placeholder="0"
+          />
+        </div>
+        <div class="mb-3">
+          <label>Keterangan</label>
+          <textarea class="form-control" formControlName="notes"></textarea>
+        </div>
+
+        <div class="text-center">
+          <div class="btn-group">
+            <button class="btn btn-secondary" (click)="back()">Batal</button>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Simpan Pembayaran</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

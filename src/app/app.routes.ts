@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { RoleGuard } from './guards/role.guard';
 import { Login } from './auth/login/login';
+import { ChangePasswordComponent } from './auth/login/change-password';
 import { DashboardComponent } from './dashboard/dashboard';
 import { LayoutComponent } from './layout/layout/layout';
 import { ProductDetailComponent } from './product/product-detail.component';
@@ -9,6 +10,9 @@ import { ProductListComponent } from './product/product-list.component';
 import { SalesListComponent } from './sales/sales-list.component';
 import { SalesFormComponent } from './sales/sales-form.component';
 import { SalesDetailComponent } from './sales/sales-detail.component';
+import { SalesInvoiceDetailComponent } from './sales.invoice/sales.invoice-detail.component';
+import { SalesInvoiceListComponent } from './sales.invoice/sales.invoice-list.component';
+import { SalesInvoicePaymentComponent } from './sales.invoice/sales.invoice-payment.component';
 import { PurchaseListComponent } from './purchases/purchase-list.component';
 import { PurchaseFormComponent } from './purchases/purchase-form.component';
 import { PurchaseDetailComponent } from './purchases/purchase-detail.component';
@@ -21,6 +25,9 @@ import { SupplierDetailComponent } from './supplier/supplier-detail.component';
 import { LocationListComponent } from './location/location-list.component';
 import { LocationFormComponent } from './location/location-form.component';
 import { LocationDetailComponent } from './location/location-detail.component';
+import { ConfigurationListComponent } from './config/config-list.component';
+import { ConfigurationFormComponent } from './config/config-form.component';
+import { ConfigurationDetailComponent } from './config/config-detail.component';
 import { ReportComponent } from './report/report.component';
 import { Register } from './auth/login/register';
 import { authGuard } from './guards/auth.guard';
@@ -31,17 +38,21 @@ import { ReceiveListComponent } from './receive/receive-list.component';
 import { ReceiveDetailComponent } from './receive/receive-detail.component';
 import { ReceiveFormComponent } from './receive/receive-form.component';
 import { UserListComponent } from './user/user-list.component';
+import { ReceivePaymentComponent } from './receive/receive-payment.component';
+import { FinanceListComponent } from './finance/finance-list.component';
 
 
 
 export const routes: Routes = [
+  { path: '', component: Login },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
+  { path: 'change-password', component: ChangePasswordComponent },
     {
       path: '',
       component: LayoutComponent,
       children: [
-        { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard]},
+        { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'sales', 'warehouse'] }},
         { path: 'products', component: ProductListComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'sales', 'warehouse'] }},
         { path: 'products/detail/:id', component: ProductDetailComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'sales', 'warehouse'] } },
         { path: 'products/add', component: ProductFormComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'sales', 'warehouse'] } },
@@ -66,13 +77,22 @@ export const routes: Routes = [
         { path: 'suppliers/add', component: SupplierFormComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
         { path: 'suppliers/edit/:id', component: SupplierFormComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
         { path: 'suppliers/detail/:id', component: SupplierDetailComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
+        { path: 'finance', component: FinanceListComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'finance'] } },
         { path: 'locations', component: LocationListComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
         { path: 'locations/add', component: LocationFormComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
         { path: 'locations/edit/:id', component: LocationFormComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
         { path: 'locations/detail/:id', component: LocationDetailComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
+        { path: 'config', component: ConfigurationListComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin'] } },
+        { path: 'config/add', component: ConfigurationFormComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin'] } },
+        { path: 'config/edit/:id', component: ConfigurationFormComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin'] } },
+        { path: 'config/detail/:id', component: ConfigurationDetailComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin'] } },
         { path: 'receive', component: ReceiveListComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
         { path: 'receive/add', component: ReceiveFormComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
-        { path: 'receive/detail/:id', component: ReceiveDetailComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse'] } },
+        { path: 'receive/detail/:id', component: ReceiveDetailComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'sales', 'finance'] } },
+        { path: 'receive/payment/:id', component: ReceivePaymentComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'finance'] } },
+        { path: 'sales-invoice', component: SalesInvoiceListComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'sales', 'finance'] } },
+        { path: 'sales-invoice/detail/:id', component: SalesInvoiceDetailComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'warehouse', 'finance'] } },
+        { path: 'sales-invoice/payment/:id', component: SalesInvoicePaymentComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin', 'finance'] } },
         { path: 'reports', component: ReportComponent, canActivate: [authGuard, RoleGuard] },
         { path: 'users', component: UserListComponent, canActivate: [authGuard, RoleGuard], data: { roles: ['admin'] } }
 

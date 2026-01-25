@@ -83,14 +83,22 @@ export class CustomerFormComponent implements OnInit {
         // Update customer
         console.log('Update customer:', formData);
         this.customerService.registerCustomer(formData).subscribe({
-          next: (res) => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Berhasil',
-              text: 'Customer berhasil diupdate'
-            }).then(() => {
-              this.router.navigate(['/customers']);
-            });
+          next: (res: any) => {
+            if (res.meta.code == "2000100") {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data pelanggan berhasil diupdate'
+              }).then(() => {
+                this.router.navigate(['/customers']);
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res.meta.message
+              });
+            }
           },
           error: (err) => {
             console.error('Error saving customer:', err);
@@ -104,14 +112,22 @@ export class CustomerFormComponent implements OnInit {
       } else {
         // Create new customer
         this.customerService.registerCustomer(formData).subscribe({
-          next: (res) => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Berhasil',
-              text: 'Customer berhasil ditambahkan'
-            }).then(() => {
-              this.router.navigate(['/customers']);
-            });
+          next: (res: any) => {
+            if (res.meta.code == "2000100") {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data pelanggan berhasil disimpan'
+              }).then(() => {
+                this.router.navigate(['/customers']);
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res.meta.message
+              });
+            }
           },
           error: (err) => {
             console.error('Error saving customer:', err);

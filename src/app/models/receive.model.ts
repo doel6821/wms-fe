@@ -5,11 +5,12 @@ export class ReceiveOrder {
         public id?: number,
 	    public supplierId?: number,
         public supplier?: Supplier,
-	    public invoiceNumber?: number,
+	    public invoiceNumber?: string,
 	    public receiveDate?: string,
 	    public status?: string,
 	    public dueDate?: string,
         public paymentStatus?: string,
+        public totalAmount?: number,
         public items?: Item[],
     ){}
 }
@@ -28,6 +29,20 @@ export class Item {
         public purchasePrice?: number,
     ){}
 }
+
+export class PaymentReceiveRequest {
+    constructor (
+		public id?: number,
+		public receiveId?: number,
+        public invoiceNumber?: string,
+		public paymentDate?: number,
+	    public paymentMethod?: string,
+		public referenceNumber?: string,
+	    public amount?: number,
+		public notes?: string,
+    ){}
+}
+
 
 
 

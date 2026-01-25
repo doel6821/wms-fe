@@ -43,6 +43,7 @@
           <th>No. HP</th>
           <th>Perkiraan Diskon (%)</th>
           <th>Term</th>
+          <th>Lead Time</th>
           <th>Aksi</th>
         </tr>
       </thead>
@@ -52,6 +53,7 @@
           <td>{{ s.phone }}</td>
           <td>{{ s.discountPercent }}%</td>
           <td>{{ s.termOfPayment }}</td>
+          <td>{{ s.leadTimeDays }}</td>
           <td>
             <div class="btn-group">
               <button class="btn btn-sm btn-outline-info" (click)="goToDetail(s.id!)">

@@ -1,19 +1,23 @@
 import { Customer } from "./customer.model";
 import { Product } from "./product.model";
 
-export class InvoiceOrderRequest {
+export class SalesInvoice {
     constructor (
 	    public id?: number,
 		public customerId?: number,
 	    public customer?: Customer,          
-	    public InvoiceDate?: string,
+	    public invoiceDate?: string,
+		public invoiceNumber?: string,
+		public amount?: number,
+		public totalAmount?: number,
 	    public status?: string,
-	    public items?: InvoiceOrderItem[],
+		public dueDate?: string,
+		public paymentStatus?: string,
+	    public invoiceItems?: InvoiceOrderItem[],
     ){}
 }
 
 export interface InvoiceListQueryParams {
-  customerName?: string;
   customerId?: number;
   page?: number;
   limit?: number;
@@ -28,8 +32,22 @@ export class InvoiceOrderItem {
 		public product?: Product,
 	    public productCode?: string,
 		public productName?: string,
-	    public InvoiceOrderQty?: number,
+	    public quantity?: number,
+		public price?: number,
+		public total?: number,
 		public productLocation?: number,
     ){}
 }
 
+export class PaymentRequest {
+    constructor (
+		public id?: number,
+		public invoiceId?: number,
+		public invoiceNumber?: string,
+		public paymentDate?: number,
+	    public paymentMethod?: string,
+		public referenceNumber?: string,
+	    public amount?: number,
+		public notes?: string,
+    ){}
+}

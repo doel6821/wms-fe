@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Daftar Sales Order</h4>
-    <button class="btn btn-primary" (click)="goToAdd()">+ Tambah Sales Order</button>
+    <h4>Daftar Penjualan</h4>
+    <button class="btn btn-primary" (click)="goToAdd()">+ Tambah Penjualan</button>
   </div>
 
   <!-- Filter Section -->
@@ -56,7 +56,7 @@
       <table class="table table-striped">
         <thead class="table-light">
           <tr>
-            <th>Id</th>
+            <!-- <th>Id</th> -->
             <th>Tanggal Penjualan</th>
             <th>Pelanggan</th>
             <th>Jumlah Barang</th>
@@ -67,7 +67,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let salesOrder of salesOrders">
-            <td>{{ salesOrder.id || 'N/A' }}</td>
+            <!-- <td>{{ salesOrder.id || 'N/A' }}</td> -->
             <td>{{ salesOrder.orderDate | date:'dd/MM/yyyy' }}</td>
             <td>{{ salesOrder.customer?.name }}</td>
             <td>{{salesOrder.items?.length}}</td>

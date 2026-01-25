@@ -36,6 +36,10 @@ export class ReceiveListComponent implements OnInit {
     this.form = this.fb.group({
       supplierId: [0, Validators.required],
       supplierName: ['', Validators.required],
+      dueDate: [''],
+      startDate: [''],
+      endDate: [''],
+      paymentStatus: [''],
     });
   }
 
@@ -46,10 +50,15 @@ export class ReceiveListComponent implements OnInit {
 
   loadReceiveOrders(page: number) {
     this.isLoading = true;
-    this.filter.page = page;
-    this.filter.limit = 10;
-    this.filter.id = this.form.value.supplierId;
-    this.receiveOrderService.getReceiveOrderList(this.filter).subscribe({
+    this.receiveOrderService.getReceiveOrderList({
+      page: page,
+      limit: 10, 
+      supplierId: this.form.value.supplierId,
+      dueDate: this.form.value.dueDate,
+      startDate: this.form.value.startDate,
+      endDate: this.form.value.endDate,
+      paymentStatus: this.form.value.paymentStatus,
+    }).subscribe({
       next: (res) => {
         this.receives = res.data || [];
         this.meta = res.meta || {};
@@ -92,6 +101,10 @@ export class ReceiveListComponent implements OnInit {
 
   goToDetail(id: number) {
     this.router.navigate(['/receive/detail', id]);
+  }
+
+  goToPayment(id: any) {
+    this.router.navigate(['/receive/payment', id]);
   }
 
   loadPage() {

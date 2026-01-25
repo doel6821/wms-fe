@@ -9,12 +9,13 @@ export class Supplier {
         public address?: string,
         public discountPercent?: number,
         public termOfPayment?: string,
+        public leadTimeDays?: number,
         public cancelOnBackOrder?: boolean,
     ){}
 }
 
 export interface SupplierQueryParams {
-  id?: number,  
+  supplierId?: number,  
   name?: string;
   page?: number;
   limit?: number;

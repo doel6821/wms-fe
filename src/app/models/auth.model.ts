@@ -7,6 +7,14 @@ export class LoginRequest {
     ){}
 }
 
+export class ChangePasswordRequest {
+    constructor( 
+        public email?: string,
+        public oldPassword?: string,
+        public newPassword?: string,
+    ){}
+}
+
 export class AuthUser {
     constructor(
         public token?:string,

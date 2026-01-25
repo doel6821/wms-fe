@@ -45,7 +45,7 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>ID</th>
+              <!-- <th>ID</th> -->
               <th>Tanggal</th>
               <th>Customer Name</th>
               <th>Total Item</th>
@@ -55,7 +55,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let p of packings" [ngClass]="{ 'table-secondary': isLoading }">
-              <td>{{ p.id }}</td>
+              <!-- <td>{{ p.id }}</td> -->
               <td>{{ p.packingDate | date:'dd/MM/yyyy' }}</td>
               <td>{{ p.customer.name }}</td>
               <td>{{ p.items.length | number }}</td>

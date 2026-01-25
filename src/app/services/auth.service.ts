@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environtments/environtment';
-import { LoginRequest } from '../models/auth.model';
+import { ChangePasswordRequest, LoginRequest } from '../models/auth.model';
 import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
@@ -10,6 +10,14 @@ export class AuthService {
 
   login(credentials: LoginRequest) {
     return this.http.post(`${environment.apiBaseUrl}/login`, credentials);
+  }
+
+  changePassword(credentials: ChangePasswordRequest) {
+    return this.http.post(`${environment.apiBaseUrl}/change-password`, credentials);
+  }
+
+  forgotPassword(credentials: LoginRequest) {
+    return this.http.post(`${environment.apiBaseUrl}/forgot`, credentials);
   }
 
   registerTenant(credentials: LoginRequest) {

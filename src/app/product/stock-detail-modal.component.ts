@@ -90,7 +90,7 @@ import { ProductLocation } from '../models/product.model';
 
             <!-- PEMBELIAN -->
             <div *ngIf="type === 'purchase'">
-              <h6>Daftar Purchase Order</h6>
+              <h6>Daftar Pembelian</h6>
               <table class="table table-striped">
                 <thead>
                   <tr>

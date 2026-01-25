@@ -139,6 +139,7 @@ export class PurchaseFormComponent implements OnInit {
       });
 
       this.loadProducts()
+      this.loadPurchaseOrderRecomendation(supplierId)
     }
 
 
@@ -172,6 +173,48 @@ export class PurchaseFormComponent implements OnInit {
             this.orderItems.push(orderItemGroup);
           });
         }
+
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading purchase order:', err);
+        this.isLoading = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Gagal memuat data purchase order'
+        });
+      }
+    });
+  }
+
+  loadPurchaseOrderRecomendation(supplierId: number) {
+    this.isLoading = true;
+    this.purchaseOrderService.getPurchaseOrderRecomendationBySupplierID(+supplierId!).subscribe({
+      next: (res: any) => {
+        const purchaseOrderRecomendation = res.data;
+        const discount = this.form.get('discount')?.value || 0;
+        let amount = 0;
+        let totalAmount = 0;
+        // Load order items
+        this.orderItems.clear();
+        purchaseOrderRecomendation.forEach((item: any) => {
+          const orderItemGroup = this.createOrderItem();
+          orderItemGroup.patchValue({
+            productId: item.productId,
+            productName: item.productName,
+            orderQty: item.orderQty,
+            price: item.price,
+            totalAmount: item.totalAmount
+          });
+          this.orderItems.push(orderItemGroup);
+          amount += item.totalAmount;
+        });
+        totalAmount = amount - (amount * discount / 100);
+        this.form.patchValue({
+          amount: amount,
+          totalAmount: totalAmount
+        });
 
         this.isLoading = false;
       },

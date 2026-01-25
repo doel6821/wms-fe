@@ -8,7 +8,7 @@ export class RoleGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean | UrlTree {
-    const role = localStorage.getItem('role');
+    const role = window.localStorage.getItem('role');
     const allowedRoles = route.data['roles'] as string[];
 
     // Jika tidak ada role user (belum login)
