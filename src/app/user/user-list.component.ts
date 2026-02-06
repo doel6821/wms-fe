@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from './../services/user.service';
 import { User } from '../models/user.model';
 import Swal from 'sweetalert2';
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
   selector: 'app-user-list',
@@ -20,8 +21,15 @@ export class UserListComponent implements OnInit {
   selectedUser?: User;
   isModalOpen = false;
 
-  constructor(private userService: UserService, private fb: FormBuilder) {
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private userService: UserService, 
+    private fb: FormBuilder, 
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {
     this.form = this.fb.group({
+      filterEmail: [''],
       email: ['', [Validators.required, Validators.email]],
       password: [''],
       role: ['', Validators.required],
@@ -34,11 +42,12 @@ export class UserListComponent implements OnInit {
 
   loadUsers() {
     this.isLoading = true;
-    this.filterEmail = this.form.value.email;
+    this.filterEmail = this.form.value.filterEmail;
     this.userService.getUsers({ email: this.filterEmail }).subscribe({
       next: (res) => {
         this.users = res.data;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isLoading = false;
@@ -66,6 +75,7 @@ export class UserListComponent implements OnInit {
     this.selectedUser = user;
     this.form.patchValue({ email: user.email, role: user.role });
     const modal = document.getElementById('userModal');
+    console.log(modal, "====>>>>>>>>")
     if (modal) (modal as any).style.display = 'block';
   }
 
@@ -84,29 +94,39 @@ export class UserListComponent implements OnInit {
       }
       this.userService.createUser(req).subscribe({
         next: () => {
-          Swal.fire('Berhasil', 'User berhasil ditambahkan', 'success');
-          // this.closeModal();
+          Swal.fire('Berhasil', 'User berhasil ditambahkan', 'success')
+          this.closeModal();
+          
         },
-        error: () => Swal.fire('Error', 'Gagal menambahkan user', 'error')
+        error: () => {
+          Swal.fire('Error', 'Gagal menambahkan user', 'error')
+          this.closeModal();
+        }  
       });
-      this.loadUsers();
+      // this.loadUsers();
     } else if (this.selectedUser) {
       const role = this.form.value.role;
       this.userService.updateUserRole(this.selectedUser.id, role).subscribe({
         next: () => {
-          Swal.fire('Berhasil', 'Role user berhasil diperbarui', 'success');
-          this.closeModal();
+          Swal.fire('Berhasil', 'Role user berhasil diperbarui', 'success')
+            this.closeModal();
         },
-        error: () => Swal.fire('Error', 'Gagal memperbarui role user', 'error')
+        error: () => {
+          Swal.fire('Error', 'Gagal memperbarui role user', 'error')
+          this.closeModal();
+        }  
       });
-      this.loadUsers();
     }
   }
 
   closeModal() {
     this.isModalOpen = false;
-    console.log("close modal")
     const modal = document.getElementById('userModal');
     if (modal) (modal as any).style.display = 'none';
+    // this.router.navigate(['/sales']);
+    // this.router.navigate(['/users']);
+    // // window.location.reload()
+    this.resetFilter()
+    
   }
 }

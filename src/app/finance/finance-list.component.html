@@ -59,7 +59,7 @@
           <!-- <td>{{ inv.id }}</td> -->
           <td>{{ inv.invoiceNumber }}</td>
           <td>Rp {{ inv.amount| number:'1.0-0' }}</td>
-          <td>{{ inv.paymentDate | date:'dd MMM yyyy' }}</td>
+          <td>{{ inv.paymentDate | date:'dd MMM yyyy':'+0700' }}</td>
           <td>{{ inv.paymentMethod }}</td>
           <td>{{ inv.referenceNumber }}</td>
         </tr>

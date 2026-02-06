@@ -30,9 +30,9 @@ export class ReceivePaymentComponent implements OnInit {
     this.form = this.fb.group({
       paymentDate: [new Date().toISOString().slice(0, 10), Validators.required],
       paymentMethod: ['', Validators.required],
-      referenceNumber: ['', Validators.required],
+      referenceNumber: [''],
       amount: [0, Validators.required],
-      notes: ['', Validators.required],
+      notes: [''],
     });
   }
 
@@ -47,6 +47,9 @@ export class ReceivePaymentComponent implements OnInit {
       this.receiveOrderService.getReceiveOrderByID(+this.receiveId).subscribe({
         next: (res: any) => {
           this.receiveOrder = res.data;
+          this.form.patchValue({
+            amount: res.data.totalAmount
+          });
           this.isLoading = false;
         },
         error: (err) => {
